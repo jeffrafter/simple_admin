@@ -1,0 +1,2 @@
+* Enable themes
+* Add configuration for load_paths and remove app/admin as a hardcoded value (make it default)

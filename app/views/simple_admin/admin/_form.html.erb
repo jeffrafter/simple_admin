@@ -1,0 +1,16 @@
+  <%= send(SimpleAdmin.form_for_helper, @resource, :as => @interface.member.to_sym,
+    :url => resource_path(@resource), :html => {:class => "formtastic #{@interface.member}"}) do |form| %>
+    <fieldset class="inputs">
+      <ol>
+        <% @interface.columns_for(:form).each do |col| %>
+          <%= form.input col.attribute %>
+        <% end %>
+      </ol>
+    </fieldset>
+    <fieldset class="buttons">
+      <ol>
+        <li class="commit"><input class="update" name="commit" type="submit" value="Update Product"></li>
+        <li class="cancel"><a href="/admin/products">Cancel</a></li>
+      </ol>
+    </fieldset>
+  <% end %>

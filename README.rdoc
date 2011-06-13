@@ -1,0 +1,21 @@
+== SimpleAdmin
+
+I need an admin module for Rails and it has to be simple. ActiveAdmin is
+beautiful and has a great DSL, but complex under the covers.
+
+Goals:
+
+* Minimal meta-programming
+* Beautiful interface (hey, just use the ActiveAdmin interfaces!)
+* Themeable
+* Nice DSL
+* Rails-friendly
+* Fewer dependencies
+* Fewer options
+
+= What this means to you
+
+If you want to customize a bunch of stuff, you might want to keep looking.
+
+Ultimately, there is always a need for projects like ActiveAdmin. Sometimes
+you can get away with something simpler, sometimes you can't.

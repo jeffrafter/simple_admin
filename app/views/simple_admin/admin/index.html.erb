@@ -1,0 +1,80 @@
+<% content_for :simple_admin_main_content do %>
+  <div class="paginated_collection">
+    <div class="pagination_information">
+      <% if @collection.num_pages < 2 %>
+        <% if @collection.size == 0 %>
+          No <%= @interface.collection.titleize %> found
+        <% elsif @collection.size == 1 %>
+          Displaying <b>1</b> <%= @interface.member.titleize %>
+        <% else %>
+          Displaying <b>all <%= @collection.size %></b> <%= @interface.collection.titleize %>
+        <% end %>
+      <% else %>
+         Displaying <%= @interface.collection.titleize %>
+         <b><%= (@collection.current_page * SimpleAdmin.default_per_page) - SimpleAdmin.default_per_page + 1 %>&nbsp;-&nbsp;<%= (@collection.current_page * SimpleAdmin.default_per_page) > @collection.total_count ? @collection.total_count : (@collection.current_page * SimpleAdmin.default_per_page) %></b>
+         of <b><%= @collection.total_count %></b> in total
+      <% end %>
+    </div>
+    <div class="paginated_collection_contents">
+      <div class="index_content">
+        <div class="index_as_table">
+          <table border="0" class="index_table" cellspacing="0" cellpadding="0" id="<%= @interface.collection %>">
+            <thead>
+              <tr>
+                <% @interface.columns_for(:index).each do |col| %>
+                  <th class="<%= simple_admin_sortable_header_classes_for(col) %>">
+                    <%= link_to(col.title,
+                      request.query_parameters.merge(:order => "#{col.sort_key}_#{simple_admin_order_for_sort_key(col.sort_key)}").except(:page)) %>
+                  </th>
+                <% end %>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @collection.each do |object| %>
+                <tr class="<%= cycle('odd', 'even') %>">
+                  <% @interface.columns_for(:index).each do |col| %>
+                    <td>
+                      <% if col.data %>
+                        <%= col.data.call(object, col) %>
+                      <% else %>
+                        <%= simple_admin_pretty_format(object.send(col.attribute)) %>
+                      <% end %>
+                    </td>
+                  <% end %>
+                  <td><%= simple_admin_resource_actions(object) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div id="index_footer">
+      Download:&nbsp;
+      <% [:csv, :xml, :json].each do |format| %>
+        <%= link_to format.to_s.upcase, { :format => format}.merge(request.query_parameters.except(:commit, :format)) %>
+      <% end %>
+    </div>
+    <%= paginate(@collection) %>
+  </div>
+<% end %>
+
+<% content_for :simple_admin_sidebar_content do %>
+  <div class="panel sidebar_section" id="filters_sidebar_section">
+    <h3>Filters</h3>
+    <div class="panel_contents">
+      <%= form_tag '', :class => "q_search", :id => "q_search", :method => "get" do |form| %>
+        <% @interface.columns_for(:filters).each do |col| %>
+          <%= filter_for(col.attribute, @interface.constant) %>
+        <% end %>
+        <div class="buttons">
+          <input name="commit" type="submit" value="Filter" />
+          <a href="#" class="clear_filters_btn">Clear Filters</a>
+          <input id="order" name="order" type="hidden" value="id_desc" />
+          <input id="scope" name="scope" type="hidden" />
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

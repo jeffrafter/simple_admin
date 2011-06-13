@@ -1,0 +1,21 @@
+<% content_for :simple_admin_main_content do %>
+  <div class="panel">
+    <h3><%= @interface.member.titleize %> Details</h3>
+    <div class="panel_contents">
+      <div class="<%= @interface.member %> attributes_table"
+        id="<%= ['attributes_table', @interface.member, @resource.to_param].join("_") %>">
+        <table border="0" cellspacing="0" cellpadding="0">
+          <% @interface.columns_for(:show).each do |col| %>
+            <tr>
+              <th><%= col.title %></th>
+              <td><%= data_for(col) %></td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% content_for :simple_admin_sidebar_content do %>
+<% end %>
