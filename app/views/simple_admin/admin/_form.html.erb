@@ -9,8 +9,8 @@
     </fieldset>
     <fieldset class="buttons">
       <ol>
-        <li class="commit"><input class="update" name="commit" type="submit" value="Update Product"></li>
-        <li class="cancel"><a href="/admin/products">Cancel</a></li>
+        <li class="commit"><input class="save" name="commit" type="submit" value="Save <%= @interface.member.titleize %>"></li>
+        <li class="cancel"><%= link_to "Cancel", send("simple_admin_#{@interface.collection}_path") %></li>
       </ol>
     </fieldset>
   <% end %>

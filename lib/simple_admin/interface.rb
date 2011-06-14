@@ -68,17 +68,30 @@ module SimpleAdmin
 
     def default_columns_for(sym, options={})
       @view = sym
-      cols = constant.columns
       if @view == :form
-        cols.reject! do |col|
-          # TODO, check for attr_accessible / attr_protected
-          SKIPPED_COLUMNS.include?(col.name.to_sym) ||
-          constant.primary_key.to_s == col.name
-        end
+        cols = constant.content_columns.map {|col| col.name.to_sym }
+        cols += association_columns(:belongs_to).map{|col| col.to_sym }
+        cols -= SKIPPED_COLUMNS
+        cols.compact!
+      else
+        cols = constant.columns.map{|col| col.name }
       end
-      cols.each {|col| column(col.name) }
+      cols.each {|col| column(col.to_s) }
       @view = nil
       @columns[sym]
+    end
+
+    # Based on formtastic
+    def association_columns(*by_associations) #:nodoc:
+      constant.reflections.collect do |name, association_reflection|
+        if by_associations.present?
+          if by_associations.include?(association_reflection.macro) && association_reflection.options[:polymorphic] != true
+            name
+          end
+        else
+          name
+        end
+      end.compact
     end
   end
 end

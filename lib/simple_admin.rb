@@ -1,14 +1,18 @@
 module SimpleAdmin
   require 'simple_admin/engine' if defined?(Rails) && Rails::VERSION::MAJOR == 3
-  require 'simple_admin/controller'
 
-  mattr_accessor :current_user_method,
+  mattr_accessor :require_user_method,
+                 :current_user_method,
                  :current_user_name_method,
                  :site_title,
                  :default_per_page,
                  :form_for_helper
 
   class << self
+    def require_user_method
+      @@require_user_method
+    end
+
     def current_user_method
       @@current_user_method || raise(ConfigurationNotFound.new("current_user_method"))
     end
@@ -87,5 +91,14 @@ module SimpleAdmin
         "to app/admin/#{File.basename(e.blamed_files.first, '.rb')}_admin.rb"
     end
   end
+
+  class UnknownAdminInterface < StandardError
+    attr_accessor :message
+
+    def initialize(e)
+      @message = "SimpleAdmin interface unknown, make sure you mount SimpleAdmin in your routes and that you have registered an interface for this resource"
+    end
+  end
+
 
 end

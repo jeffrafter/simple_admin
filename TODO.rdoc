@@ -1,2 +1,5 @@
 * Enable themes
-* Add configuration for load_paths and remove app/admin as a hardcoded value (make it default)
+* Add scopes
+* Add csv
+* Handle :except, :only for actions
+* Helpers split out of application_helper

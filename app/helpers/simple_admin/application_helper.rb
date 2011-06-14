@@ -142,7 +142,7 @@ module SimpleAdmin
 
     def simple_admin_resource_actions(object)
       links = link_to "View",  send("simple_admin_#{@interface.member}_path", object), :class => "member_link view_link"
-      links += link_to "Edit", send("simple_admin_#{@interface.member}_path", object), :class => "member_link edit_link"
+      links += link_to "Edit", send("edit_simple_admin_#{@interface.member}_path", object), :class => "member_link edit_link"
       links += link_to "Delete", send("simple_admin_#{@interface.member}_path", object), :method => :delete, :confirm => "Are you sure you want to delete this?", :class => "member_link delete_link"
       links
     end
