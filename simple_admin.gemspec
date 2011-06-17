@@ -18,4 +18,17 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
+
+  s.add_runtime_dependency("rails", [">= 3.1.0rc4"])
+  s.add_runtime_dependency("kaminari", [">= 0"])
+  s.add_runtime_dependency("formtastic", [">= 0"])
+  s.add_runtime_dependency("meta_search", [">= 1.1.0.pre"])
+
+  s.add_development_dependency("rspec", [">= 2.6.0"])
+  s.add_development_dependency("rspec-rails", [">= 2.6.0"])
+  s.add_development_dependency("shoulda", [">= 0"])
+  s.add_development_dependency("factory_girl", [">= 0"])
+  s.add_development_dependency("mocha", ["> 0"])
+  s.add_development_dependency("capybara", [">= 0.4.0"])
+  s.add_development_dependency("sqlite3-ruby")
 end

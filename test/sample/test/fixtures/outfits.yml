@@ -1,9 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/Fixtures.html
-
-one:
-  kind: MyString
-  thing_id: 1
-
-two:
-  kind: MyString
-  thing_id: 1

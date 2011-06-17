@@ -1,4 +1,5 @@
 require 'kaminari'
+require 'meta_search'
 
 module SimpleAdmin
   class AdminController < ::ApplicationController
@@ -9,6 +10,8 @@ module SimpleAdmin
     unloadable
 
     respond_to :csv, :json, :xml, :html
+
+    helper SimpleAdmin::AdminHelper
 
     layout 'simple_admin'
 

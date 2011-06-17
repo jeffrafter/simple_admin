@@ -1,5 +1,3 @@
 * Enable themes
 * Add scopes
 * Add csv
-* Handle :except, :only for actions
-* Helpers split out of application_helper

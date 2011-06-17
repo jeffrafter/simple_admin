@@ -1,4 +1,4 @@
-<% content_for :simple_admin_main_content do %>
+<% content_for :content do %>
   <div class="paginated_collection">
     <div class="pagination_information">
       <% if @collection.num_pages < 2 %>
@@ -21,10 +21,10 @@
           <table border="0" class="index_table" cellspacing="0" cellpadding="0" id="<%= @interface.collection %>">
             <thead>
               <tr>
-                <% @interface.columns_for(:index).each do |col| %>
-                  <th class="<%= simple_admin_sortable_header_classes_for(col) %>">
+                <% @interface.attributes_for(:index).each do |col| %>
+                  <th class="<%= sortable_header_classes_for(col) %>">
                     <%= link_to(col.title,
-                      request.query_parameters.merge(:order => "#{col.sort_key}_#{simple_admin_order_for_sort_key(col.sort_key)}").except(:page)) %>
+                      request.query_parameters.merge(:order => "#{col.sort_key}_#{order_for_sort_key(col.sort_key)}").except(:page)) %>
                   </th>
                 <% end %>
                 <th>&nbsp;</th>
@@ -33,16 +33,16 @@
             <tbody>
               <% @collection.each do |object| %>
                 <tr class="<%= cycle('odd', 'even') %>">
-                  <% @interface.columns_for(:index).each do |col| %>
+                  <% @interface.attributes_for(:index).each do |col| %>
                     <td>
                       <% if col.data %>
                         <%= col.data.call(object, col) %>
                       <% else %>
-                        <%= simple_admin_pretty_format(object.send(col.attribute)) %>
+                        <%= pretty_format(object.send(col.attribute)) %>
                       <% end %>
                     </td>
                   <% end %>
-                  <td><%= simple_admin_resource_actions(object) %></td>
+                  <td><%= resource_actions(object) %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -60,12 +60,12 @@
   </div>
 <% end %>
 
-<% content_for :simple_admin_sidebar_content do %>
+<% content_for :sidebar do %>
   <div class="panel sidebar_section" id="filters_sidebar_section">
     <h3>Filters</h3>
     <div class="panel_contents">
-      <%= form_tag '', :class => "q_search", :id => "q_search", :method => "get" do |form| %>
-        <% @interface.columns_for(:filters).each do |col| %>
+      <%= form_tag '', :class => "q_search", :id => "q_search", :method => "get" do %>
+        <% @interface.filters_for(:index).each do |col| %>
           <%= filter_for(col.attribute, @interface.constant) %>
         <% end %>
         <div class="buttons">
@@ -77,4 +77,6 @@
       <% end %>
     </div>
   </div>
+
+  <%= sidebars %>
 <% end %>

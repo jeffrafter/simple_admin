@@ -2,7 +2,7 @@
     :url => resource_path(@resource), :html => {:class => "formtastic #{@interface.member}"}) do |form| %>
     <fieldset class="inputs">
       <ol>
-        <% @interface.columns_for(:form).each do |col| %>
+        <% @interface.attributes_for(:form).each do |col| %>
           <%= form.input col.attribute %>
         <% end %>
       </ol>

@@ -1,14 +1,14 @@
-<% content_for :simple_admin_main_content do %>
+<% content_for :content do %>
   <div class="panel">
     <h3><%= @interface.member.titleize %> Details</h3>
     <div class="panel_contents">
       <div class="<%= @interface.member %> attributes_table"
         id="<%= ['attributes_table', @interface.member, @resource.to_param].join("_") %>">
         <table border="0" cellspacing="0" cellpadding="0">
-          <% @interface.columns_for(:show).each do |col| %>
+          <% @interface.attributes_for(:show).each do |attr| %>
             <tr>
-              <th><%= col.title %></th>
-              <td><%= data_for(col) %></td>
+              <th><%= attr.title %></th>
+              <td><%= data_for(attr) %></td>
             </tr>
           <% end %>
         </table>
@@ -17,5 +17,6 @@
   </div>
 <% end %>
 
-<% content_for :simple_admin_sidebar_content do %>
+<% content_for :sidebar do %>
+  <%= sidebars %>
 <% end %>

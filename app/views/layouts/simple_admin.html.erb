@@ -1,7 +1,7 @@
 <!DOCTYPE html><html>
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-type"/>
-    <title><%= simple_admin_title %></title>
+    <title><%= title %></title>
     <%- if protect_against_forgery? -%>
       <meta name="authenticity-token" id="authenticity-token" content="<%= form_authenticity_token %>" />
     <%- end -%>
@@ -12,26 +12,27 @@
   <body class="index admin_occasions">
     <div id="wrapper">
       <div id="header">
-        <h1 id="site_title"><%= simple_admin_site_title %></h1>
-        <%= simple_admin_tabs %>
-        <%= simple_admin_utility_nav %>
+        <h1 id="site_title"><%= site_title %></h1>
+        <%= tabs %>
+        <%= utility_nav %>
       </div>
       <div id="title_bar">
-        <%= simple_admin_breadcrumbs %>
-        <h2 id="page_title"><%= simple_admin_page_title %></h2>
-        <%= simple_admin_action_items %>
+        <%= breadcrumbs %>
+        <h2 id="page_title"><%= page_title %></h2>
+        <%= action_items %>
       </div>
       <div class="with_sidebar" id="active_admin_content">
         <div id="main_content_wrapper">
           <div id="main_content">
-            <%= yield :simple_admin_main_content %>
+            <%= yield :content %>
           </div>
         </div>
         <div id="sidebar">
-          <%= yield :simple_admin_sidebar_content %>
+          <%= yield :sidebar %>
         </div>
       </div>
       <div id="footer">
+        <%= yield :footer %>
       </div>
     </div>
   </body>

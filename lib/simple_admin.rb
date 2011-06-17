@@ -9,18 +9,6 @@ module SimpleAdmin
                  :form_for_helper
 
   class << self
-    def require_user_method
-      @@require_user_method
-    end
-
-    def current_user_method
-      @@current_user_method || raise(ConfigurationNotFound.new("current_user_method"))
-    end
-
-    def current_user_name_method
-      @@current_user_name_method || raise(ConfigurationNotFound.new("current_user_name_method"))
-    end
-
     def site_title
       @@site_title || Rails.application.class.parent_name
     end
@@ -88,7 +76,7 @@ module SimpleAdmin
 
     def initialize(e)
       @message = "#{e.message}. Try renaming app/admin/#{File.basename(e.blamed_files.first)} " +
-        "to app/admin/#{File.basename(e.blamed_files.first, '.rb')}_admin.rb"
+        "to app/admin/#{File.basename(e.blamed_files.first, '.rb')}s.rb"
     end
   end
 
@@ -99,6 +87,4 @@ module SimpleAdmin
       @message = "SimpleAdmin interface unknown, make sure you mount SimpleAdmin in your routes and that you have registered an interface for this resource"
     end
   end
-
-
 end
