@@ -1,23 +1,10 @@
 require 'spec_helper'
 
-class ::ApplicationController
-  helper_method :current_user, :current_user_name
-
-  def current_user
-    true
-  end
-
-  def current_user_name
-    "Abe Vigoda"
-  end
-end
-
 describe SimpleAdmin::AdminController do
   render_views
 
   before :each do
     @thing = Factory(:thing)
-    SimpleAdmin::AdminController.any_instance.expects(:require_admin).returns(true)
   end
 
   describe "index" do

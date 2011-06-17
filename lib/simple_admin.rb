@@ -6,11 +6,13 @@ module SimpleAdmin
                  :current_user_name_method,
                  :site_title,
                  :default_per_page,
-                 :form_for_helper
+                 :form_for_helper,
+                 :stylesheet,
+                 :javascript
 
   class << self
     def site_title
-      @@site_title || Rails.application.class.parent_name
+      @@site_title || Rails.application.class.parent_name.titleize
     end
 
     def default_per_page
@@ -19,6 +21,14 @@ module SimpleAdmin
 
     def form_for_helper
       @@form_for_helper || :semantic_form_for
+    end
+
+    def stylesheet
+      @@stylesheet || "simple_admin/active_admin.css"
+    end
+
+    def javascript
+      @@javascript || "simple_admin/active_admin.js"
     end
 
     def registered

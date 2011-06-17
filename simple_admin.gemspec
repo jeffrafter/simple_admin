@@ -19,9 +19,9 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
+  # Formtastic is a dependency if you are using the default form helper
   s.add_runtime_dependency("rails", [">= 3.1.0rc4"])
   s.add_runtime_dependency("kaminari", [">= 0"])
-  s.add_runtime_dependency("formtastic", [">= 0"])
   s.add_runtime_dependency("meta_search", [">= 1.1.0.pre"])
 
   s.add_development_dependency("rspec", [">= 2.6.0"])

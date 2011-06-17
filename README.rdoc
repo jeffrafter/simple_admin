@@ -1,21 +1,313 @@
 == SimpleAdmin
 
-I need an admin module for Rails and it has to be simple. ActiveAdmin is
-beautiful and has a great DSL, but complex under the covers.
+SimpleAdmin is a simple set of templates and controllers that can be
+used to quickly build out an admin section on your Rails site. It is
+heavily based on the popular ActiveAdmin gem from Greg Bell and
+VersaPay (in fact, the default stylesheets, javascripts, and images
+come directly from the ActiveAdmin project because they are awesome).
 
-Goals:
+So why a new gem? ActiveAdmin has a lot of features and dependencies
+out of the box. These are great but are often more than you need, and
+unfortunately they create a lot of complexity in the underlying gem
+and integration. SimpleAdmin eschews much of that complexity and is
+instead a basic Rails engine. This makes debugging problems simpler
+as there are fewer dependencies, less meta-programming, and a smaller
+set of features.
 
-* Minimal meta-programming
-* Beautiful interface (hey, just use the ActiveAdmin interfaces!)
-* Themeable
-* Nice DSL
-* Rails-friendly
-* Fewer dependencies
-* Fewer options
+== Getting started
 
-= What this means to you
+In your Gemfile, include simple_admin and formtastic:
 
-If you want to customize a bunch of stuff, you might want to keep looking.
+    gem "simple_admin"
+    gem "formtastic"
 
-Ultimately, there is always a need for projects like ActiveAdmin. Sometimes
-you can get away with something simpler, sometimes you can't.
+Bundle install:
+
+    bundle
+
+Generate out the configuration:
+
+    rails g simple_admin
+
+Add any administration interfaces (for example, in app/admin/posts.rb):
+
+    SimpleAdmin.register :post do
+    end
+
+Restart rails and check out your new admin interface.
+
+== Customizing an interface
+
+Although you could use the simple registration pattern above, you may
+need some more control. Within the register block you can override
+the defaults using the following commands:
+
+* before
+* index
+* show
+* form
+
+The +before+ helper allows you to specify any +before_filter+ style
+logic. It requires a block which is executed in the context of the
+controller prior to the page being displayed:
+
+    SimpleAdmin.register :post do
+      before do
+        # You could use this instead of the default config option
+        require_admin
+      end
+    end
+
+You can also specify to which actions the before block should be
+applied:
+
+    SimpleAdmin.register :post do
+      before :only => [:create, :delete] do
+        require_admin
+      end
+    end
+
+The +index+ helper controls the index display. If you don't include
+the index command then a default index page will be setup. If you
+do include it you can override the behavior. You can pass a title
+option to modify the default page title:
+
+    SimpleAdmin.register :post do
+      # Customizing the title on the page
+      index :title => 'Posts people have made'
+    end
+
+The +index+ helper also accepts a block. Within the block you have access
+modify the default filters and attributes. If you don't include an
+attributes specification or a filters specification then the defaults will
+be used.
+
+Within the +index+, +show+, and +form+ blocks, the attributes command works
+the same. It accepts either +except+ or +only+ as an option to limit the
+list of default attributes:
+
+    SimpleAdmin.register :post do
+      index do
+        # Customize what attributes show using except
+        attributes :except => [:id, :body]
+      end
+    end
+
+    SimpleAdmin.register :post do
+      index do
+        # Customize what attributes show using only
+        attributes :only => [:id, :title]
+      end
+    end
+
+You can omit these options and instead include a block. Within the
+block you can call
+
+* clear
+* defaults
+* attribute
+
+Clearing the list of attributes allows you complete control over what shows.
+The +defaults+ helper is not used very often, but allows you to reset to the
+default list of attributes:
+
+    SimpleAdmin.register :post do
+      index do
+        attributes do
+          # No attributes
+          clear
+          # An attribute
+          attribute :title
+          # Add an attribute with some data
+          attribute :body, :title => "Post content" {|post| post.body.slice(60) }
+        end
+      end
+    end
+
+The +attribute+ command allows you to add a new attribute (if you had called clear)
+or override an already included default (if you had not called clear, or had already
+specified an attribute). The attribute helper expects the attribute name (as a
+symbol), any options, and an optional block which will be evaluated at the time
+of display. The only options that are expected are +:title+ which controls the
+associated label or header and +:sortable+ which is only used within the index
+(and which can only be set to false).
+
+    SimpleAdmin.register :post do
+      index do
+      end
+
+      # The show section allows you to control the show page
+      show do
+        # Control which attributes are displayed
+        attributes :only => [:title, :body]
+      end
+
+      # The form section allows you to control the new and edit pages
+      form do
+        # Control which attributes can be modified
+        attributes do
+          clear
+          attribute :title
+          attribute :body
+        end
+      end
+    end
+
+Within the index you can also specify +filters+, which work exactly
+like +attributes+ except that they control the search and filtering
+form on the right.
+
+    SimpleAdmin.register :post do
+      index do
+        attributes do
+          # This is not necessary, attributes are defaulted automatically
+          defaults
+        end
+
+        filters do
+          # No filters
+          clear
+          # Add a filter for searching the title
+          filter :title
+        end
+      end
+    end
+
+Finally, within +index+, +show+ and +form+ you can specify any number of
++sidebar+ helpers. Sidebars require a block which is executed at the time
+of rendering:
+
+    SimpleAdmin.register :post do
+      index do
+        sidebar :title => 'Intersting post stats' do
+          # Within index you have @collection, in other views you have @resource
+          your_post_stats_helper(@collection)
+        end
+      end
+    end
+
+== Customizing the routes
+
+When you generate simple_admin into your application a new mount point is
+automatically created:
+
+    mount SimpleAdmin::Engine => '/admin'
+
+You can change this path however you see fit.
+
+The available actions for each admin interface can also be customized:
+
+    SimpleAdmin.register :posts, :actions => [:index, :show] do
+    end
+
+These will be directly reflected in the routes for the interface. If
+changed, you will need to restart your Rails server as the routes are
+generated at initialization. Available actions are:
+
+* index
+* new
+* show
+* edit
+* destroy
+* create
+* update
+
+== Configuration options
+
+All of the configuration for SimpleAdmin happens within the
++config/initializers/simple_admin.rb+ file that is generated
+when you run the generator.
+
+The +require_user_method+ setting allows you to specify which
+controller method should be called before rendering any admin
+pages. There is no default for this method. If it is not
+present then simple_admin will not do any admin verification
+prior to performing its controller actions.
+
+It is possible to check for admin status using application level
+before filters or even using the +before+ block within each
+individual admin interface registration.
+
+To set this, specify the controller method you want called as a
+symbol:
+
+    config.require_user_method = :require_admin
+
+The +current_user_method+ is used by simple_admin to determine if
+there is a logged in user. There is no default for this property.
+If it is not present, no logged in user method will be checked and
+user information will not be displayed in the header of admin forms.
+
+To set this, specify the controller method you want called as a
+symbol:
+
+    config.current_user_method = :current_user
+
+The +current_user_name_method+ is used by simple_admin to access the
+display name of the currently logged in user. There is no default for
+this property. If it is not present, any logged in user name will
+not be displayed in the header of admin forms.
+
+To set this, specify the controller method you want called as a
+symbol:
+
+    config.current_user_name_method = :current_user_name
+
+The +site_title+ is displayed in the header of admin pages. If empty
+this value defaults to +Rails.application.class.parent_name.titleize+:
+
+    config.site_title = "My Website"
+
+The +default_per_page+ value allows you to control how many results
+appear on admin index pages. This value is fed into kaminari and is
+defaulted to 25 if not present:
+
+    config.default_per_page = 25
+
+The +form_for_helper+ defaults to the +:semantic_form_for+ helper
+from formtastic. If you want to use another engine, like +simple_form+
+you can change this property and the gem requirements. Note that the
+default styling from active_admin relies on formtastic output.
+
+    config.form_for_helper = :semantic_form_for
+
+The +stylesheet+ and +javascript+ properties are used within the admin
+layout and are defaulted to the active_admin styles and scripts. You
+may want to override these styles, or simply move them to your public
+folder so that they are not served through rails. These properties allow
+you to manage where the assets are stored (either within the default
+pipeline or no):
+
+    config.stylesheet = "simple_admin/active_admin.css"
+    config.javascript = "simple_admin/active_admin.js"
+
+== Testing
+
+To run the specs you need to clone this repository, bundle, then
+generate the sample application:
+
+  rake sample
+
+I went against the defaults from Rails 3.1 because one rake task
+is simpler, and this can target any rails version currently
+installed for testing. Plus, I use specs.
+
+After that:
+
+  rake spec
+
+== Contributors
+
++ Jeff Rafter
++ Your name here
+
+== Acknowledgements
+
+Obviously special thanks to the ActiveAdmin team and Greg Bell (@gregbell).
+I cribbed tons off ActiveAdmin, and used the default ActiveAdmin styles.
+This represents large portion of this gem.
+
+Thanks also Nick Plante (@zapnap) for helping get the specs organized in
+the engine and for fighting through the refactoring with me.
+
+Thanks also to Ryan Bigg (@ryanbigg) for his Forem project and help in IRC.

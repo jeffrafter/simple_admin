@@ -1,3 +1,4 @@
-* Enable themes
-* Add scopes
-* Add csv
+* Add scopes - within active_admin you can declare scopes. Scopes are great,
+  and I would love to have any scopes from your ActiveRecord model exposed
+  in the interface. This would extend the fields and filters available by
+  default.
