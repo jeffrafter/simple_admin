@@ -6,4 +6,7 @@ gemspec
 gem "rails", ">= 3.1.0rc4"
 gem "kaminari", ">= 0"
 gem "formtastic", ">= 0"
-gem 'meta_search', ">= 1.1.0.pre"
+gem "meta_search", ">= 1.1.0.pre"
+gem "fastercsv" if RUBY_VERSION =~ /^1.8/
+gem "fuubar"
+

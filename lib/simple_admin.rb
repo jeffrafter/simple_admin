@@ -65,10 +65,10 @@ module SimpleAdmin
     #     end
     #
     # Various configuration options are available within the block
-    def register(resource, &block)
-      interface = SimpleAdmin::Interface.new
-      interface.register(resource, &block)
+    def register(resource, options={}, &block)
+      interface = SimpleAdmin::Interface.new(resource, options, &block)
       self.registered << interface
+      interface
     end
   end
 
@@ -81,7 +81,7 @@ module SimpleAdmin
     end
   end
 
-  class InvalidAdminFile < StandardError
+  class InvalidAdminFile < LoadError
     attr_accessor :message
 
     def initialize(e)

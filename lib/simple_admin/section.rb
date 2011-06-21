@@ -23,7 +23,7 @@ module SimpleAdmin
 
     def sidebar(sidebar_options={}, &block)
       sidebar_options[:data] = block
-      self.options[:sidebars] = []
+      self.options[:sidebars] ||= []
       self.options[:sidebars] << sidebar_options
     end
   end

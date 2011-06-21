@@ -25,7 +25,13 @@ module SimpleAdmin
     end
 
     # Define or override an attribute for this section
-    def attribute(name, options={}, &block)
+    #
+    # Available options:
+    #
+    #   :sortable +true+ or +false+ (defaults to +true+)
+    #   :sort_key a column name used when sorting this column (defaults to the column for this attribute)
+    #
+     def attribute(name, options={}, &block)
       attr = @attributes.find {|attr| attr.attribute == name.to_sym }
       unless attr
         attr = OpenStruct.new
@@ -35,13 +41,22 @@ module SimpleAdmin
       attr.options = options
       attr.data = block
       attr.title = options[:title] || name.to_s.titleize
-      attr.sortable = options[:sortable] || true
-      attr.sort_key = options[:sortable] || name.to_s
+      attr.sortable = options[:sortable].nil? || !(options[:sortable] === false)
+      attr.sort_key = (options[:sort_key] || name).to_s
       attr
     end
 
     # Define the default attributes for this section
-    def defaults(options={})
+    #
+    # If the current section is a form it will only use content columns and will
+    # skip timestamps and primary key fields.
+    #
+    # Available options:
+    #
+    #   :except An array of excluded attribute names as symbols
+    #   :only An array of attribute names for this view
+    #
+     def defaults(options={})
       clear
       if @section.section == :form
         association_columns = @interface.constant.reflections.map do |name, ref|

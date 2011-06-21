@@ -6,6 +6,7 @@ module SimpleAdmin
     before_filter :require_user
     before_filter :lookup_interface
     before_filter :lookup_resource, :only => [:show, :edit, :update, :destroy]
+    before_filter :handle_before
 
     unloadable
 
@@ -19,7 +20,7 @@ module SimpleAdmin
       @collection = @interface.constant
       @collection = @collection.order("#{@interface.constant.table_name}.#{$1} #{$2}") if params[:order] && params[:order] =~ /^([\w\_\.]+)_(desc|asc)$/
       @collection = @collection.metasearch(clean_search_params(params))
-      @collection = @collection.page(params[:page]).per(@per_page || SimpleAdmin.default_per_page)
+      @collection = @collection.page(params[:page]).per(@per_page || SimpleAdmin.default_per_page) if params[:format].blank? || params[:format] == 'html'
       respond_with(@collection)
     end
 
@@ -94,6 +95,13 @@ module SimpleAdmin
 
     def lookup_resource
       @resource = @interface.constant.find(params[:id])
+    end
+
+    def handle_before
+      @interface.before.each do |before|
+        next unless before[:actions].include?(params[:action].to_sym)
+        instance_eval(&before[:data])
+      end
     end
 
     def clean_search_params(search_params)

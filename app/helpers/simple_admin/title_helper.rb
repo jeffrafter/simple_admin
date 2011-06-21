@@ -9,7 +9,7 @@ module SimpleAdmin
     end
 
     def page_title
-      options = @interface.section(params[:action].to_sym).options || {}
+      options = @interface.options_for(params[:action].to_sym)
       case options[:title]
       when Proc
         options[:title].call(@resource)

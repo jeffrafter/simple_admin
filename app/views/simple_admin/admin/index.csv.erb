@@ -1,0 +1,19 @@
+<%-
+  # Based on Active Admin
+  generator = RUBY_VERSION =~ /^1.8/ ? FasterCSV : CSV
+
+  output = generator.generate do |csv|
+    cols = @interface.attributes_for(:index)
+    csv << cols.map(&:title)
+    @collection.each do |object|
+      csv << cols.map do |col|
+        if col.data
+          col.data.call(object, col)
+        else
+          pretty_format(object.send(col.attribute))
+        end
+      end
+    end
+  end
+%>
+<%= output.html_safe %>

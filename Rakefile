@@ -40,6 +40,9 @@ task :sample do
     system "echo 'gem \"#{gem}\"' >> Gemfile"
   end
 
+  # If we are not on 1.9.x we need fastercsv
+  system "echo 'gem \"fastercsv\"' >> Gemfile" if RUBY_VERSION =~ /^1.8/
+
   # To work with Rails 3.1.x we need the latest meta_search
   system "echo 'gem \"meta_search\", \">= 1.1.0.pre\"' >> Gemfile"
 

@@ -2,9 +2,12 @@
 
 SimpleAdmin is a simple set of templates and controllers that can be
 used to quickly build out an admin section on your Rails site. It is
-heavily based on the popular ActiveAdmin gem from Greg Bell and
+heavily based on the popular
+{ActiveAdmin}[link:http://activeadmin.info/] gem from
+{Greg Bell}[link:https://twitter.com/#!/gregbell] and
 VersaPay (in fact, the default stylesheets, javascripts, and images
-come directly from the ActiveAdmin project because they are awesome).
+come directly from the {ActiveAdmin project}[link:https://github.com/gregbell/active_admin]
+because they are awesome).
 
 So why a new gem? ActiveAdmin has a lot of features and dependencies
 out of the box. These are great but are often more than you need, and
@@ -20,6 +23,7 @@ In your Gemfile, include simple_admin and formtastic:
 
     gem "simple_admin"
     gem "formtastic"
+    gem "fastercsv" # if Ruby < 1.9
 
 Bundle install:
 
@@ -155,7 +159,8 @@ associated label or header and +:sortable+ which is only used within the index
 
 Within the index you can also specify +filters+, which work exactly
 like +attributes+ except that they control the search and filtering
-form on the right.
+form on the right. You can also customize the filter by passing
++:as+ and +:collection+ options.
 
     SimpleAdmin.register :post do
       index do
@@ -208,7 +213,7 @@ generated at initialization. Available actions are:
 * new
 * show
 * edit
-* destroy
+* delete
 * create
 * update
 
@@ -298,16 +303,16 @@ After that:
 
 == Contributors
 
-+ Jeff Rafter
-+ Your name here
+* Jeff Rafter
+* Your name here
 
 == Acknowledgements
 
-Obviously special thanks to the ActiveAdmin team and Greg Bell (@gregbell).
+Special thanks to the ActiveAdmin team and Greg Bell ({@gregbell}[link:https://twitter.com/#!/gregbell]).
 I cribbed tons off ActiveAdmin, and used the default ActiveAdmin styles.
 This represents large portion of this gem.
 
-Thanks also Nick Plante (@zapnap) for helping get the specs organized in
+Thanks also Nick Plante ({@zapnap}[link:https://twitter.com/#!/zapnap]) for helping get the specs organized in
 the engine and for fighting through the refactoring with me.
 
-Thanks also to Ryan Bigg (@ryanbigg) for his Forem project and help in IRC.
+Thanks also to Ryan Bigg ({@ryanbigg}[link:https://twitter.com/#!/ryanbigg]) for his Forem project and help in IRC.
