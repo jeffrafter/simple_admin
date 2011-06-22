@@ -1,9 +1,11 @@
 module SimpleAdmin
   module SidebarHelper
     def sidebars
-      @interface.sidebars_for(:index).each do |sidebar|
-        instance_exec(sidebar, &sidebar[:data])
+      content = "".html_safe
+      @interface.sidebars_for(params[:action].to_sym).each do |sidebar|
+        content << instance_eval(&sidebar[:data])
       end
+      content
     end
   end
 end

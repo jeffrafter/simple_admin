@@ -68,38 +68,52 @@ module SimpleAdmin
       else
         association_name
       end
-      input_name = (input_name + "_eq").to_sym
+      input_name = (input_name.to_s + "_eq").to_sym
       collection = find_collection_for_column(klass, association_name, options)
       [ label(input_name, method.to_s.titlecase),
         select_tag(input_name, options_for_select(collection, params[input_name]), :include_blank => options[:include_blank] || 'Any')
       ].join("\n").html_safe
     end
 
+    def generate_association_input_name(klass, method) #:nodoc:
+      if reflection = reflection_for(klass, method)
+        if [:has_and_belongs_to_many, :has_many].include?(reflection.macro)
+          "#{method.to_s.singularize}_ids"
+        else
+          reflection.options[:foreign_key] || "#{method}_id"
+        end
+      else
+        method
+      end.to_sym
+    end
+
     def find_collection_for_column(klass, column, options) #:nodoc:
       collection = if options[:collection]
-        options.delete(:collection)
+        collection = options.delete(:collection)
+        collection = collection.to_a if collection.is_a?(Hash)
+        collection.map { |o| [pretty_format(o.first), o.last] }
       elsif reflection = reflection_for(klass, column)
         options[:find_options] ||= {}
         if conditions = reflection.options[:conditions]
           options[:find_options][:conditions] = reflection.klass.merge_conditions(conditions, options[:find_options][:conditions])
         end
-        reflection.klass.find(:all, options[:find_options])
+        collection = reflection.klass.find(:all, options[:find_options])
+        collection.map { |o| [pretty_format(o), o.id] }
       else
         boolean_collection(klass, column, options)
       end
-      collection = collection.to_a if collection.is_a?(Hash)
-      collection.map { |o| [pretty_format(o), o.id] }
-    end
+      collection
+   end
 
     def boolean_collection(klass, column, options)
       [['Yes', true], ['No', false]]
     end
 
     def filter_check_boxes_input(klass, method, options = {})
-      input_name = (generate_association_input_name(method).to_s + "_in").to_sym
-      collection = find_collection_for_column(method, options)
-      selected_values = klass.send(input_name) || []
-      checkboxes = template.content_tag :div, :class => "check_boxes_wrapper" do
+      input_name = (generate_association_input_name(klass, method).to_s + "_in").to_sym
+      collection = find_collection_for_column(klass, method, options)
+      selected_values = params[input_name] || []
+      checkboxes = content_tag :div, :class => "check_boxes_wrapper" do
         collection.map do |c|
           label = c.is_a?(Array) ? c.first : c
           value = c.is_a?(Array) ? c.last : c

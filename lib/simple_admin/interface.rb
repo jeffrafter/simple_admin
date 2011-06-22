@@ -7,7 +7,7 @@ module SimpleAdmin
     def initialize(resource, options={}, &block)
       if resource.is_a?(Class)
         @constant = resource
-        @symbol = resource.name.downcase.to_sym
+        @symbol = resource.name.underscore.to_sym
       else
         @constant = resource.to_s.camelize.singularize.constantize
         @symbol = resource.to_sym
@@ -22,19 +22,20 @@ module SimpleAdmin
     end
 
     def filters_for(sym)
-      section(sym).options[:filters].attributes
+      options_for(sym)[:filters].attributes
     end
 
     def attributes_for(sym)
-      section(sym).options[:attributes].attributes
+      options_for(sym)[:attributes].attributes
     end
 
     def sidebars_for(sym)
-      section(sym).options[:sidebars] || []
+      options_for(sym)[:sidebars] || []
     end
 
     def options_for(sym)
-      section(sym).options
+      sym = :form if [:new, :edit].include?(sym)
+      section(sym).options || {}
     end
 
     def actions

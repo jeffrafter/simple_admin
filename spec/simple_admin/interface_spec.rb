@@ -1,9 +1,17 @@
 require 'spec_helper'
 
+class ThingWithCrazyClassName < Thing; end
+
 describe SimpleAdmin::Interface do
   it "accepts a constant as the resource" do
     @interface = SimpleAdmin.register(Thing)
     @interface.constant.should == Thing
+  end
+
+  it "accepts a crazy constant as the resource" do
+    @interface = SimpleAdmin.register(ThingWithCrazyClassName)
+    @interface.constant.should == ThingWithCrazyClassName
+    @interface.member.should == "thing_with_crazy_class_name"
   end
 
   it "accepts a symbol as the resource" do

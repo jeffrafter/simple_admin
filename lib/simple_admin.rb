@@ -43,7 +43,7 @@ module SimpleAdmin
         @@registered = []
         # We load up all of the admin files on launch, if they change you need to restart
         begin
-          Dir[Rails.root.join("app/admin/**/*.rb")].each {|f| require f}
+          Dir[Rails.root.join("app/admin/**/*.rb")].each {|f| load f}
         rescue LoadError => e
           # For certain kinds of load errors, we want to give a more helpful message
           if e.message.match(/Expected .* to define .*/)
@@ -54,6 +54,11 @@ module SimpleAdmin
         end
       end
       @@registered
+    end
+
+    # Clear the routes and registered interfaces
+    def unregister
+      @@registered = nil
     end
 
     # Called by the initializer

@@ -25,7 +25,6 @@ module SimpleAdmin
     end
 
     def show
-      @resource = @interface.constant.find(params[:id])
       respond_with(@resource)
     end
 
@@ -109,7 +108,7 @@ module SimpleAdmin
       search_params = search_params.dup
       search_params.delete_if do |key, value|
         value == "" ||
-        ["utf8", "scope", "commit", "action", "order", "interface", "controller", "format"].include?(key)
+        ["utf8", "scope", "commit", "action", "order", "interface", "controller", "format", "page"].include?(key)
       end
       search_params
     end

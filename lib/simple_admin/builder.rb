@@ -31,5 +31,8 @@ module SimpleAdmin
       @interface.before << options
     end
 
+    # Comfort the masses
+    alias_method :before_filter, :before
+
   end
 end
