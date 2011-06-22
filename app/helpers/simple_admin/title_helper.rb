@@ -12,7 +12,7 @@ module SimpleAdmin
       options = @interface.options_for(params[:action].to_sym)
       case options[:title]
       when Proc
-        options[:title].call(@resource)
+        instance_exec(@resource, &options[:title])
       when Symbol
         if @resource
           @resource.send(optons[:title])

@@ -26,7 +26,7 @@ module SimpleAdmin
 
     def data_for(col)
       value = if col.data
-        col.data.call(@resource, col)
+        instance_exec(@resource, &col.data)
       elsif col.attribute.to_s =~ /^([\w]+)_id$/ && @resource.respond_to?($1.to_sym)
         pretty_format(@resource.send($1))
       else

@@ -1,5 +1,12 @@
 module SimpleAdmin
   require 'simple_admin/engine' if defined?(Rails) && Rails::VERSION::MAJOR == 3
+  require 'simple_admin/interface'
+  require 'simple_admin/builder'
+  require 'simple_admin/section'
+  require 'simple_admin/attributes'
+  require 'simple_admin/filters'
+  require 'simple_admin/breadcrumbs'
+
 
   mattr_accessor :require_user_method,
                  :current_user_method,

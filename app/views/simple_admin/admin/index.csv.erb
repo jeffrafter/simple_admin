@@ -8,7 +8,7 @@
     @collection.each do |object|
       csv << cols.map do |col|
         if col.data
-          col.data.call(object, col)
+          instance_exec(object, &col.data)
         else
           pretty_format(object.send(col.attribute))
         end
