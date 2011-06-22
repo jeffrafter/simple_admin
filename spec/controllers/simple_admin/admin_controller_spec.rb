@@ -14,7 +14,7 @@ describe SimpleAdmin::AdminController do
 
     it "should render the sidebars" do
       SimpleAdmin.expects(:success)
-      @block = Proc.new {|sidebar| SimpleAdmin.success if sidebar[:title] == 'Awes!' }
+      @block = Proc.new { SimpleAdmin.success }
       @sidebar = {:title => 'Awes!', :data => @block}
       SimpleAdmin::Interface.any_instance.expects(:sidebars_for).with(:index).returns([@sidebar])
       get :index, :interface => "things"
