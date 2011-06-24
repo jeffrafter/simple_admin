@@ -19,7 +19,8 @@ task :sample do
   Dir.chdir "spec/sample"
 
   # Generate our initializer into the sample application
-  system "rails g #{ENGINE}"
+  system "rails g #{ENGINE}:install"
+  system "rails g #{ENGINE}:assets"
 
   # Make a place and a thing
   system "rails g scaffold place name:string"

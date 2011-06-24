@@ -4,7 +4,7 @@ require 'rails'
 module SimpleAdmin
   class Engine < Rails::Engine
     isolate_namespace SimpleAdmin
-    initializer 'simple_admin' do
+    initializer 'simple_admin' do |app|
       if Rails.env == "development"
         simple_admin_reloader = ActiveSupport::FileUpdateChecker.new(Dir["app/admin/**/*"], true) do
           SimpleAdmin.unregister

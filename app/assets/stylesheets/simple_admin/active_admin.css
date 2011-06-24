@@ -275,10 +275,10 @@ th, td, caption {
         background: #7b8389;
         color: #fff; }
       #header ul#tabs > li.has_nested > a {
-        background: url("/assets/simple_admin/active_admin/nested_menu_arrow.gif") no-repeat 89% 50%;
+        background: url("/images/simple_admin/active_admin/nested_menu_arrow.gif") no-repeat 89% 50%;
         padding-right: 20px; }
       #header ul#tabs > li.has_nested.current > a {
-        background: #7b8389 url("/assets/simple_admin/active_admin/nested_menu_arrow_dark.gif") no-repeat 89% 50%;
+        background: #7b8389 url("/images/simple_admin/active_admin/nested_menu_arrow_dark.gif") no-repeat 89% 50%;
         padding-right: 20px; }
       #header ul#tabs > li:hover > a {
         background: #7b8389;
@@ -295,7 +295,7 @@ th, td, caption {
         -webkit-border-top-left-radius: 10px;
         z-index: 800;
         border-bottom: 5px solid #7b8389;
-        background: #7b8389 url("/assets/simple_admin/active_admin/nested_menu_arrow_dark.gif") no-repeat 89% 50%; }
+        background: #7b8389 url("/images/simple_admin/active_admin/nested_menu_arrow_dark.gif") no-repeat 89% 50%; }
       #header ul#tabs > li:hover ul {
         display: block; }
       #header ul#tabs > li ul {
@@ -952,7 +952,7 @@ table {
       text-decoration: none;
       display: block; }
     table th.sortable a {
-      background: url("/assets/simple_admin/active_admin/orderable.png") no-repeat 0 4px;
+      background: url("/images/simple_admin/active_admin/orderable.png") no-repeat 0 4px;
       padding-left: 13px; }
     table th.sorted-asc a {
       background-position: 0 -27px; }
