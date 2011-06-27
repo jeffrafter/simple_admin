@@ -31,11 +31,11 @@ module SimpleAdmin
     end
 
     def stylesheet
-      @@stylesheet || "simple_admin/active_admin.css"
+      @@stylesheet || "/stylesheets/simple_admin/active_admin.css"
     end
 
     def javascript
-      @@javascript || "simple_admin/active_admin.js"
+      @@javascript || "/javascripts/simple_admin/active_admin.js"
     end
 
     def registered

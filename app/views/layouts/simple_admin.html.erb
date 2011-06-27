@@ -5,8 +5,8 @@
     <%- if protect_against_forgery? -%>
       <meta name="authenticity-token" id="authenticity-token" content="<%= form_authenticity_token %>" />
     <%- end -%>
-    <%= stylesheet_link_tag SimpleAdmin.stylesheet %>
-    <%= javascript_include_tag SimpleAdmin.javascript %>
+    <%= simple_admin_stylesheet_link_tag SimpleAdmin.stylesheet %>
+    <%= simple_admin_javascript_include_tag SimpleAdmin.javascript %>
   </head>
   <body class="index admin_occasions">
     <div id="wrapper">

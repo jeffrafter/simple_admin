@@ -7,5 +7,6 @@ module SimpleAdmin
     include SimpleAdmin::FilterHelper
     include SimpleAdmin::SidebarHelper
     include SimpleAdmin::PathHelper
+    include SimpleAdmin::AssetsHelper
   end
 end

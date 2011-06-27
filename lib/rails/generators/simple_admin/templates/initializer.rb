@@ -65,12 +65,14 @@ SimpleAdmin.setup do |config|
 
   # The +stylesheet+ and +javascript+ properties are used within the admin
   # layout and are defaulted to the active_admin styles and scripts. You
-  # may want to override these styles, or simply move them to your public
-  # folder so that they are not served through rails. These properties allow
+  # may want to override these styles, or simply use the asset pipeline
+  # instead of installing them to your public folder. These properties allow
   # you to manage where the assets are stored (either within the default
-  # pipeline or no):
+  # pipeline or no). By default, SimpleAdmin assumes you have run the
+  # asset generator (rails g simple_admin:assets) and that these files
+  # live within your public folder:
   #
-  # config.stylesheet = "simple_admin/active_admin.css"
-  # config.javascript = "simple_admin/active_admin.js"
+  # config.stylesheet = "/stylesheets/simple_admin/active_admin.css"
+  # config.javascript = "/javascripts/simple_admin/active_admin.js"
 
 end
