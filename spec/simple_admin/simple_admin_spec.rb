@@ -42,13 +42,13 @@ describe SimpleAdmin do
   end
 
   it "has a default stylesheet" do
-    SimpleAdmin.stylesheet.should == "simple_admin/active_admin.css"
+    SimpleAdmin.stylesheet.should == "/stylesheets/simple_admin/active_admin.css"
     SimpleAdmin.setup {|config| config.stylesheet = "nyan-cat.css"}
     SimpleAdmin.stylesheet.should == "nyan-cat.css"
   end
 
   it "has a default script" do
-    SimpleAdmin.javascript.should == "simple_admin/active_admin.js"
+    SimpleAdmin.javascript.should ==  "/javascripts/simple_admin/active_admin.js"
     SimpleAdmin.setup {|config| config.javascript = "nyan-cat.js"}
     SimpleAdmin.javascript.should == "nyan-cat.js"
   end
