@@ -10,6 +10,7 @@ module SimpleAdmin
       attributes
       filters if @allow_filters
       instance_eval(&block) if block_given?
+      self
     end
 
     def attributes(attr_options={}, &block)

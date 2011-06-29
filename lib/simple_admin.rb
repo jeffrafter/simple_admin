@@ -78,9 +78,11 @@ module SimpleAdmin
     #
     # Various configuration options are available within the block
     def register(resource, options={}, &block)
-      interface = SimpleAdmin::Interface.new(resource, options, &block)
-      self.registered << interface
-      interface
+      if defined?(@@registered)
+        interface = SimpleAdmin::Interface.new(resource, options, &block)
+        self.registered << interface
+        interface
+      end
     end
   end
 

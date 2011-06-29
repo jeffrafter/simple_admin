@@ -2,6 +2,7 @@ module SimpleAdmin
   module FilterHelper
     def filter_for(method, klass, options={})
       options ||= {}
+      options = options.dup
       options[:as] ||= default_filter_type(klass, method)
       return "" unless options[:as]
       field_type = options.delete(:as)

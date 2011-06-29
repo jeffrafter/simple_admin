@@ -17,6 +17,7 @@ module SimpleAdmin
       @section = section
       defaults(options)
       instance_eval(&block) if block_given?
+      self
     end
 
     # Clear the attributes for this section
