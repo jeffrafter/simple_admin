@@ -39,7 +39,7 @@ module SimpleAdmin
     end
 
     def actions
-      arr =  @options[:actions] || [:index, :show, :edit, :new, :delete, :create, :update]
+      arr =  @options[:actions] || [:index, :show, :edit, :new, :destroy, :create, :update]
       arr -= @options[:except] if @options[:except]
       arr &= @options[:only] if @options[:only]
       arr
