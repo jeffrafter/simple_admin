@@ -25,7 +25,7 @@ module SimpleAdmin
 
     def before(options={}, &block)
       options[:data] = block
-      options[:actions] = options[:actions] || [:index, :show, :edit, :new, :delete, :create, :update]
+      options[:actions] = options[:actions] || [:index, :show, :edit, :new, :destroy, :create, :update]
       options[:actions] -= options[:except] if options[:except]
       options[:actions] &= options[:only] if options[:only]
       @interface.before << options

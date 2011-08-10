@@ -2,9 +2,7 @@
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-type"/>
     <title><%= title %></title>
-    <%- if protect_against_forgery? -%>
-      <meta name="authenticity-token" id="authenticity-token" content="<%= form_authenticity_token %>" />
-    <%- end -%>
+    <%= csrf_meta_tags %>
     <%= simple_admin_stylesheet_link_tag SimpleAdmin.stylesheet %>
     <%= simple_admin_javascript_include_tag SimpleAdmin.javascript %>
   </head>

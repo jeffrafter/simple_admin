@@ -84,7 +84,7 @@ describe SimpleAdmin::Interface do
 
   it "defaults to allowing all actions" do
     @interface = SimpleAdmin.register(:things)
-    @interface.actions.should == [:index, :show, :edit, :new, :delete, :create, :update]
+    @interface.actions.should == [:index, :show, :edit, :new, :destroy, :create, :update]
   end
 
   it "allows overrides to the default set of actions" do
@@ -93,7 +93,7 @@ describe SimpleAdmin::Interface do
   end
 
   it "excludes actions from the default set of actions" do
-    @interface = SimpleAdmin.register(:things, :except => [:delete])
+    @interface = SimpleAdmin.register(:things, :except => [:destroy])
     @interface.actions.should == [:index, :show, :edit, :new, :create, :update]
   end
 
