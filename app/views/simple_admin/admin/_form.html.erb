@@ -3,7 +3,7 @@
     <fieldset class="inputs">
       <ol>
         <% @interface.attributes_for(:form).each do |col| %>
-          <%= form.input col.attribute %>
+          <%= form.input col.attribute, col.options %>
         <% end %>
       </ol>
     </fieldset>

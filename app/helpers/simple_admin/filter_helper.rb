@@ -6,7 +6,9 @@ module SimpleAdmin
       options[:as] ||= default_filter_type(klass, method)
       return "" unless options[:as]
       field_type = options.delete(:as)
-      content_tag :div, :class => "filter_form_field filter_#{field_type}" do
+      wrapper_options = options[:wrapper_html] || {}
+      wrapper_options[:class] = (wrapper_options[:class] || "") + " filter_form_field filter_#{field_type}"
+      content_tag :div, wrapper_options do
         send("filter_#{field_type}_input", klass, method, options)
       end
     end
@@ -14,7 +16,7 @@ module SimpleAdmin
     def filter_string_input(klass, method, options = {})
       field_name = "#{method}_contains"
 
-      [ label(field_name, "Search #{method.to_s.titlecase}"),
+      [ label(field_name, options[:title] || "Search #{method.to_s.titlecase}"),
         text_field_tag(field_name, params[field_name] || '')
       ].join("\n").html_safe
     end
@@ -23,7 +25,7 @@ module SimpleAdmin
       gt_field_name = "#{method}_gte"
       lt_field_name = "#{method}_lte"
 
-      [ label(gt_field_name, method.to_s.titlecase),
+      [ label(gt_field_name, options[:title] || method.to_s.titlecase),
         filter_date_text_field(klass, gt_field_name),
         " - ",
         filter_date_text_field(klass, lt_field_name)
@@ -41,7 +43,7 @@ module SimpleAdmin
       filter_select = select_tag '', options_for_select(filters, current_filter), :onchange => "document.getElementById('#{method}_numeric').name = '' + this.value + '';"
       filter_input = text_field_tag(current_filter, params[current_filter] || '', :size => 10, :id => "#{method}_numeric")
 
-      [ label_tag(method), filter_select, " ", filter_input].join("\n").html_safe
+      [ label_tag(method, options[:title]), filter_select, " ", filter_input].join("\n").html_safe
     end
 
     def numeric_filters_for_method(method, filters)
@@ -71,7 +73,7 @@ module SimpleAdmin
       end
       input_name = (input_name.to_s + "_eq").to_sym
       collection = find_collection_for_column(klass, association_name, options)
-      [ label(input_name, method.to_s.titlecase),
+      [ label(input_name, options[:title] || method.to_s.titlecase),
         select_tag(input_name, options_for_select(collection, params[input_name]), :include_blank => options[:include_blank] || 'Any')
       ].join("\n").html_safe
     end
@@ -122,7 +124,7 @@ module SimpleAdmin
         end.join("\n").html_safe
       end
 
-      [ label(input_name, method.to_s.titlecase),
+      [ label(input_name, options[:title] || method.to_s.titlecase),
         checkboxes
       ].join("\n").html_safe
     end
