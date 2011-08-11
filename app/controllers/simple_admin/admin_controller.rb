@@ -10,7 +10,8 @@ module SimpleAdmin
 
     unloadable
 
-    respond_to :csv, :json, :xml, :html
+    respond_to :csv, :json, :xml, :html, :only => :index
+    respond_to :json, :xml, :html, :except => :index
 
     helper SimpleAdmin::AdminHelper
 
