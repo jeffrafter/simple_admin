@@ -17,7 +17,7 @@ describe SimpleAdmin::AdminController do
       @block = Proc.new { SimpleAdmin.success }
       @sidebar = {:title => 'Awes!', :data => @block}
       SimpleAdmin::Interface.any_instance.expects(:sidebars_for).with(:index).returns([@sidebar])
-      get :index, :interface => "things"
+      get :index, :interface => "things", :format => "html"
     end
 
     it "should render a csv" do

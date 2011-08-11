@@ -10,7 +10,6 @@ module SimpleAdmin
 
     unloadable
 
-    respond_to :csv, :json, :xml, :html, :only => :index
     respond_to :json, :xml, :html, :except => :index
 
     helper SimpleAdmin::AdminHelper
@@ -22,7 +21,12 @@ module SimpleAdmin
       @collection = @collection.order("#{@interface.constant.table_name}.#{$1} #{$2}") if params[:order] && params[:order] =~ /^([\w\_\.]+)_(desc|asc)$/
       @collection = @collection.metasearch(clean_search_params(params))
       @collection = @collection.page(params[:page]).per(params[:per_page] || SimpleAdmin.default_per_page) if params[:format].blank? || params[:format] == 'html'
-      respond_with(@collection)
+      respond_to do |format|
+        format.csv
+        format.html
+        format.xml { render :xml => @collection }
+        format.json { render :json => @collection }
+      end
     end
 
     def show
