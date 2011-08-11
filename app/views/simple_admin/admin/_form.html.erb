@@ -1,9 +1,9 @@
   <%= send(SimpleAdmin.form_for_helper, @resource, :as => @interface.member.to_sym,
-    :url => resource_path(@resource), :html => {:class => "formtastic #{@interface.member}"}) do |form| %>
+    :url => resource_path(@resource), :html => {:class => "simple_form formtastic #{@interface.member}"}) do |form| %>
     <fieldset class="inputs">
       <ol>
         <% @interface.attributes_for(:form).each do |col| %>
-          <%= form.input col.attribute, col.options %>
+          <%= form.input col.attribute, col.options.dup %>
         <% end %>
       </ol>
     </fieldset>
