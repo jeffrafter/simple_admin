@@ -102,5 +102,57 @@ describe SimpleAdmin::Attributes do
       @attributes.attributes.map(&:title).should == ["Your Name Here"]
     end
   end
+
+  describe "section" do
+    it "creates a section" do
+      @attributes.clear
+      @attributes.section :class => 'bang'
+      @attributes.attributes.map {|att|
+        att.attributes.should == []
+        att.kind.should == :section
+        att.options.should == {:class => 'bang'}
+      }
+    end
+
+    it "contains attributes" do
+      @attributes.clear
+      @attributes.section :class => 'bang' do
+        attribute :name, :title => "Your Name Here"
+      end
+      @attributes.attributes.map {|att|
+        att.attributes.map(&:title).should == ["Your Name Here"]
+      }
+    end
+
+    it "contains sections" do
+      @attributes.clear
+      @attributes.section :class => 'bang' do
+        section :class => 'bleep' do
+          attribute :name, :title => "Your Name Here"
+        end
+      end
+      @attributes.attributes.map {|att|
+        att.attributes.map {|sec|
+          sec.attributes.map(&:title).should == ["Your Name Here"]
+        }
+      }
+    end
+
+  end
+
+  describe "content" do
+    it "creates content" do
+      SimpleAdmin::Attributes.expects(:fail).never
+      @attributes.clear
+      @attributes.content(:class => 'bang') do
+        SimpleAdmin::Attributes.fail
+      end
+      @attributes.attributes.map {|att|
+        att.data.should_not be_nil
+        att.kind.should == :content
+        att.options.should == {:class => 'bang'}
+      }
+    end
+  end
 end
 

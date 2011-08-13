@@ -8,5 +8,6 @@ module SimpleAdmin
     include SimpleAdmin::SidebarHelper
     include SimpleAdmin::PathHelper
     include SimpleAdmin::AssetsHelper
+    include SimpleAdmin::FormHelper
   end
 end

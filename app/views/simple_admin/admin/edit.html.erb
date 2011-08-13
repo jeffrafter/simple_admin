@@ -1,7 +1,9 @@
-<% content_for :content do %>
-  <% render :partial => 'form' %>
-<% end %>
+<div class="simple_admin_edit">
+  <% content_for :content do %>
+    <% render :partial => 'form' %>
+  <% end %>
 
-<% content_for :sidebar do %>
-  <%= sidebars %>
-<% end %>
+  <% content_for :sidebar do %>
+    <%= sidebars %>
+  <% end %>
+</div>

@@ -32,12 +32,13 @@ module SimpleAdmin
     #   :sortable +true+ or +false+ (defaults to +true+)
     #   :sort_key a column name used when sorting this column (defaults to the column for this attribute)
     #
-     def attribute(name, options={}, &block)
+    def attribute(name, options={}, &block)
       attr = @attributes.find {|attr| attr.attribute == name.to_sym }
       unless attr
         attr = OpenStruct.new
         @attributes << attr
       end
+      attr.kind = :attribute
       attr.attribute = name.to_sym
       attr.options = options
       attr.data = block
@@ -46,6 +47,48 @@ module SimpleAdmin
       attr.sort_key = (options[:sort_key] || name).to_s
       attr
     end
+
+    # Include rendered content inline.
+    #
+    # This is only used when displaying a form.
+    #
+    def content(options={}, &block)
+      cont = OpenStruct.new
+      @attributes << cont
+      cont.kind = :content
+      cont.options = options
+      cont.data = block
+      cont
+    end
+
+    # Create a section which may or may not contain sub-sections.
+    #
+    # Note: this works better if you first clear the attributes. For example:
+    #
+    #  attributes do
+    #    clear
+    #    section :kind => :fieldset, :legend => "Primary Address" do
+    #      attribute :address
+    #      section :class => 'csz' do
+    #        attribute :city
+    #        attribute :state
+    #        attribute :zip
+    #      end
+    #    end
+    #  end
+    def section(options={}, &block)
+      sect = OpenStruct.new
+      @attributes << sect
+      sect.kind = options.delete(:kind) || :section
+      sect.options = options
+      sect.attributes = []
+      save_attributes = @attributes
+      @attributes = sect.attributes
+      instance_eval(&block) if block_given?
+      @attributes = save_attributes
+      sect
+    end
+
 
     # Define the default attributes for this section
     #

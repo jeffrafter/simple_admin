@@ -1,22 +1,24 @@
-<% content_for :content do %>
-  <div class="panel">
-    <h3><%= @interface.member.titleize %> Details</h3>
-    <div class="panel_contents">
-      <div class="<%= @interface.member %> attributes_table"
-        id="<%= ['attributes_table', @interface.member, @resource.to_param].join("_") %>">
-        <table border="0" cellspacing="0" cellpadding="0">
-          <% @interface.attributes_for(:show).each do |attr| %>
-            <tr>
-              <th><%= attr.title %></th>
-              <td><%= data_for(attr) %></td>
-            </tr>
-          <% end %>
-        </table>
+<div class="simple_admin_show">
+  <% content_for :content do %>
+    <div class="panel">
+      <h3><%= @interface.member.titleize %> Details</h3>
+      <div class="panel_contents">
+        <div class="<%= @interface.member %> attributes_table"
+          id="<%= ['attributes_table', @interface.member, @resource.to_param].join("_") %>">
+          <table border="0" cellspacing="0" cellpadding="0">
+            <% @interface.attributes_for(:show).each do |attr| %>
+              <tr>
+                <th><%= attr.title %></th>
+                <td><%= data_for(attr) %></td>
+              </tr>
+            <% end %>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
-<% end %>
+  <% end %>
 
-<% content_for :sidebar do %>
-  <%= sidebars %>
-<% end %>
+  <% content_for :sidebar do %>
+    <%= sidebars %>
+  <% end %>
+</div>
