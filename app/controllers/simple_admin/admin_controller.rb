@@ -4,8 +4,8 @@ require 'meta_search'
 module SimpleAdmin
   class AdminController < ::ApplicationController
     before_filter :require_user
-    before_filter :lookup_interface
-    before_filter :lookup_before
+    before_filter :lookup_interface, :except => [:dashboard]
+    before_filter :lookup_before, :except => [:dashboard]
     before_filter :lookup_resource, :only => [:show, :edit, :update, :destroy]
 
     unloadable
@@ -81,6 +81,9 @@ module SimpleAdmin
         format.json { head :ok }
         format.xml  { head :ok }
       end
+    end
+
+    def dashboard
     end
 
     protected

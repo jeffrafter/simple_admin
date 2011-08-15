@@ -1,7 +1,7 @@
 module SimpleAdmin
   module TitleHelper
     def title
-      "#{page_title} | #{site_title}"
+      page_title ? "#{page_title} | #{site_title}" : site_title
     end
 
     def site_title
@@ -9,6 +9,8 @@ module SimpleAdmin
     end
 
     def page_title
+      return nil unless @interface
+
       options = @interface.options_for(params[:action].to_sym)
       case options[:title]
       when Proc
