@@ -4,6 +4,7 @@ module SimpleAdmin
       options ||= {}
       options = options.dup
       options[:as] ||= default_filter_type(klass, method)
+      expand_block_options!(options)
       return "" unless options[:as]
       field_type = options.delete(:as)
       wrapper_options = options[:wrapper_html] || {}

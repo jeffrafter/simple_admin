@@ -2,20 +2,23 @@ module SimpleAdmin
   module FormHelper
     def form_fields(form, attributes)
       attributes.map do |col|
+        options = (col.options || {}).dup
+        expand_block_options!(options)
+
         case col.kind
         when :attribute
-          form.input col.attribute, (col.options || {}).dup
+          form.input col.attribute, options
         when :content
           instance_exec(@resource, &col.data)
         when :fieldset
-          content_tag :fieldset, col.options do
+          content_tag :fieldset, options do
             content_tag :legend do
-              col.options[:legend]
-            end unless col.options[:legend].blank
+              options[:legend]
+            end unless options[:legend].blank
             form_fields(form, col.attributes)
           end
         else
-          content_tag :div, col.options do
+          content_tag :div, options do
             form_fields(form, col.attributes)
           end
         end
