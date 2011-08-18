@@ -22,7 +22,7 @@
             <thead>
               <tr>
                 <% @interface.attributes_for(:index).each do |col| %>
-                  <th class="<%= sortable_header_classes_for(col) %>">
+                  <th class="<%= sortable_header_classes_for(col) %> <%= col.attribute %>">
                     <%= link_to(col.title,
                       request.query_parameters.merge(:order => "#{col.sort_key}_#{order_for_sort_key(col.sort_key)}").except(:page)) %>
                   </th>
@@ -34,7 +34,7 @@
               <% @collection.each do |object| %>
                 <tr class="<%= cycle('odd', 'even') %>">
                   <% @interface.attributes_for(:index).each do |col| %>
-                    <td>
+                    <td class="<%= col.attribute %>">
                       <% if col.data %>
                         <%= instance_exec(object, &col.data) %>
                       <% else %>
