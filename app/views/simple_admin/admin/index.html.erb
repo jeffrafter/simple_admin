@@ -37,7 +37,7 @@
                     <td class="<%= col.attribute %>">
                       <% if col.editable %>
                         <%= send(SimpleAdmin.form_for_helper, object, :as => @interface.member.to_sym,
-                          :url => resource_path(object, :format => :json), :remote => true, :html => {:class => "simple_form formtastic #{@interface.member}"}) do |form| %>
+                          :url => resource_path(object, :format => :json), :remote => true, :html => {:class => "simple_form formtastic #{@interface.member}", :onsubmit => 'return false'}) do |form| %>
                           <%= form_field(form, col) %>
                         <% end %>
                       <% elsif col.data %>
