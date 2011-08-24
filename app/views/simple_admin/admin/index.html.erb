@@ -35,7 +35,12 @@
                 <tr class="<%= cycle('odd', 'even') %>">
                   <% @interface.attributes_for(:index).each do |col| %>
                     <td class="<%= col.attribute %>">
-                      <% if col.data %>
+                      <% if col.editable %>
+                        <%= send(SimpleAdmin.form_for_helper, object, :as => @interface.member.to_sym,
+                          :url => resource_path(object, :format => :json), :remote => true, :html => {:class => "simple_form formtastic #{@interface.member}"}) do |form| %>
+                          <%= form_field(form, col) %>
+                        <% end %>
+                      <% elsif col.data %>
                         <%= instance_exec(object, &col.data) %>
                       <% else %>
                         <%= pretty_format(object.send(col.attribute)) %>

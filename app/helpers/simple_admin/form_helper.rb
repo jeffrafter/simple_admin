@@ -24,5 +24,11 @@ module SimpleAdmin
         end
       end.join.html_safe
     end
+
+    def form_field(form, col)
+      options = (col.options || {}).dup
+      expand_block_options!(options)
+      form.input col.attribute, options
+    end
   end
 end

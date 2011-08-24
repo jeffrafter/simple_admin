@@ -44,6 +44,7 @@ module SimpleAdmin
       attr.data = block
       attr.title = options[:title] || name.to_s.titleize
       attr.sortable = options[:sortable].nil? || !(options[:sortable] === false)
+      attr.editable = options[:editable] === true
       attr.sort_key = (options[:sort_key] || name).to_s
       attr
     end

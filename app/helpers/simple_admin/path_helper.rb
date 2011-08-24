@@ -1,10 +1,10 @@
 module SimpleAdmin
   module PathHelper
-    def resource_path(res)
+    def resource_path(res, options={})
       if res.new_record?
-        send("simple_admin_#{@interface.collection}_path")
+        send("simple_admin_#{@interface.collection}_path", options)
       else
-        send("simple_admin_#{@interface.member}_path", res)
+        send("simple_admin_#{@interface.member}_path", res, options)
       end
     end
   end
