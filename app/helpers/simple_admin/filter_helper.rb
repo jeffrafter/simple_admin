@@ -1,10 +1,31 @@
 module SimpleAdmin
   module FilterHelper
+    def filter_fields(attributes)
+      attributes.map do |col|
+        options = col.options.dup
+        expand_block_options!(options)
+        case col.kind
+        when :attribute, :filter
+          filter_for(col.attribute, @interface.constant, options)
+        when :content
+          instance_exec(self, &col.data)
+        when :fieldset
+          content_tag :fieldset, options do
+            content_tag :legend do
+              options[:legend]
+            end unless options[:legend].blank
+            filter_fields(col.attributes)
+          end
+        else
+          content_tag :div, options do
+            filter_fields(col.attributes)
+          end
+        end
+      end.join.html_safe
+    end
+
     def filter_for(method, klass, options={})
-      options ||= {}
-      options = options.dup
       options[:as] ||= default_filter_type(klass, method)
-      expand_block_options!(options)
       return "" unless options[:as]
       field_type = options.delete(:as)
       wrapper_options = options[:wrapper_html] || {}
@@ -110,7 +131,7 @@ module SimpleAdmin
    end
 
     def boolean_collection(klass, column, options)
-      [['Yes', true], ['No', false]]
+      [['', true]]
     end
 
     def filter_check_boxes_input(klass, method, options = {})
@@ -130,6 +151,8 @@ module SimpleAdmin
       ].join("\n").html_safe
     end
 
+    alias_method :filter_checkboxes_input, :filter_check_boxes_input
+
     # Returns the default filter type for a given attribute
     def default_filter_type(klass, method)
       if column = column_for(klass, method)
@@ -143,6 +166,8 @@ module SimpleAdmin
           return :numeric
         when :float, :decimal
           return :numeric
+        when :boolean
+          return :check_boxes
         end
       end
 

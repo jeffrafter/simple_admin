@@ -70,9 +70,7 @@
     <h3>Filters</h3>
     <div class="panel_contents">
       <%= form_tag '', :class => "q_search", :id => "q_search", :method => "get" do %>
-        <% @interface.filters_for(:index).each do |col| %>
-          <%= filter_for(col.attribute, @interface.constant, col.options) %>
-        <% end %>
+        <%= filter_fields(@interface.filters_for(:index)) %>
         <div class="buttons">
           <input name="commit" type="submit" value="Filter" />
           <a href="?" class="clear_filters_btn">Clear Filters</a>
