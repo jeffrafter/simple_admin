@@ -793,7 +793,7 @@ body {
       margin-right: 300px; }
   #active_admin_content.without_sidebar #main_content_wrapper #main_content {
     margin-right: 0; }
-  #active_admin_content #sidebar {
+  #active_admin_content #sidebar, #active_admin_content #filters {
     float: left;
     width: 270px;
     margin-left: -270px; }
@@ -989,7 +989,7 @@ table {
   .panel_contents table tr.even td {
     background: #f4f5f5; }
 
-.sidebar_section {
+.sidebar_section, .filters_section {
   background: #f4f4f4;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -998,7 +998,7 @@ table {
   -moz-box-shadow: inset 0 1px 4px #dddddd;
   -webkit-box-shadow: inset 0 1px 4px #dddddd;
   margin-bottom: 20px; }
-  .sidebar_section h3 {
+  .sidebar_section h3, .filters_section h3 {
     background: #efefef;
     background: -webkit-gradient(linear, left top, left bottom, from(#efefef), to(#dfe1e2));
     background: -moz-linear-gradient(-90deg, #efefef, #dfe1e2);
@@ -1015,16 +1015,21 @@ table {
     line-height: 140%;
     margin-bottom: 0.5em;
     color: #5e6469; }
+    .filters_section h3 span.icon svg path, .filters_section h3 span.icon svg polygon, .filters_section h3 span.icon svg rect, .filters_section h3 span.icon svg circle,
     .sidebar_section h3 span.icon svg path, .sidebar_section h3 span.icon svg polygon, .sidebar_section h3 span.icon svg rect, .sidebar_section h3 span.icon svg circle {
       fill: #5e6469 !important; }
+    .filters_section h3 span.icon,
     .sidebar_section h3 span.icon {
       width: 1em;
       height: 1em; }
+    .filters_section h3 span.icon svg,
     .sidebar_section h3 span.icon svg {
       width: 1em;
       height: 1em; }
+    .filters_section h3 span.icon,
     .sidebar_section h3 span.icon {
       margin-right: 5px; }
+  .filters_section > div,
   .sidebar_section > div {
     padding: 3px 15px 15px 15px; }
 
@@ -1385,6 +1390,7 @@ table.dashboard {
   text-transform: uppercase;
   letter-spacing: 0.2em; }
 
+.filters_section .attributes_table th,
 .sidebar_section .attributes_table th {
   width: 50px; }
 
