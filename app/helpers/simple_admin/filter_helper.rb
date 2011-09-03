@@ -37,21 +37,25 @@ module SimpleAdmin
 
     def filter_string_input(klass, method, options = {})
       field_name = "#{method}_contains"
+      label_content =  options[:title] || options[:label] || "Search #{method.to_s.titlecase}" unless options[:label] == false
 
-      [ label(field_name, options[:title] || "Search #{method.to_s.titlecase}"),
-        text_field_tag(field_name, params[field_name] || '')
-      ].join("\n").html_safe
+      content = []
+      content << label(field_name, label_content) unless label_content.blank?
+      content << text_field_tag(field_name, params[field_name] || '', options[:input_html] || {})
+      content.join("\n").html_safe
     end
 
     def filter_date_range_input(klass, method, options = {})
       gt_field_name = "#{method}_gte"
       lt_field_name = "#{method}_lte"
+      label_content =  options[:title] || options[:label] || "#{method.to_s.titlecase}" unless options[:label] == false
 
-      [ label(gt_field_name, options[:title] || method.to_s.titlecase),
-        filter_date_text_field(klass, gt_field_name),
-        " - ",
-        filter_date_text_field(klass, lt_field_name)
-      ].join("\n").html_safe
+      content = []
+      content << label(gt_field_name, label_content) unless label_content.blank?
+      content << filter_date_text_field(klass, gt_field_name)
+      content << " - "
+      content << filter_date_text_field(klass, lt_field_name)
+      content.join("\n").html_safe
     end
 
     def filter_date_text_field(klass, method)
@@ -60,12 +64,18 @@ module SimpleAdmin
     end
 
     def filter_numeric_input(klass, method, options = {})
+      field_name = "#{method}_numeric"
       filters = numeric_filters_for_method(method, options.delete(:filters) || default_numeric_filters)
       current_filter = current_numeric_scope(klass, filters)
-      filter_select = select_tag '', options_for_select(filters, current_filter), :onchange => "document.getElementById('#{method}_numeric').name = '' + this.value + '';"
-      filter_input = text_field_tag(current_filter, params[current_filter] || '', :size => 10, :id => "#{method}_numeric")
+      label_content = options[:title] || options[:label] || "#{method.to_s.titlecase}" unless options[:label] == false
 
-      [ label_tag(method, options[:title]), filter_select, " ", filter_input].join("\n").html_safe
+      content = []
+      content << label(field_name, label_content) unless label_content.blank?
+      content << select_tag('', options_for_select(filters, current_filter),
+        {:onchange => "document.getElementById('#{method}_numeric').name = '' + this.value + '';"}.merge(options[:input_html] || {}))
+      content << " "
+      content << text_field_tag(current_filter, params[current_filter] || '', {:size => 10, :id => field_name}.merge(options[:input_html] || {}))
+      content.join("\n").html_safe
     end
 
     def numeric_filters_for_method(method, filters)
@@ -84,7 +94,7 @@ module SimpleAdmin
 
     def filter_select_input(klass, method, options = {})
       association_name = method.to_s.gsub(/_id$/, '').to_sym
-      input_name = if reflection = reflection_for(klass, association_name)
+      field_name = if reflection = reflection_for(klass, association_name)
         if [:has_and_belongs_to_many, :has_many].include?(reflection.macro)
           "#{association_name.to_s.singularize}_ids"
         else
@@ -93,11 +103,15 @@ module SimpleAdmin
       else
         association_name
       end
-      input_name = (input_name.to_s + "_eq").to_sym
+      field_name = (field_name.to_s + "_eq")
       collection = find_collection_for_column(klass, association_name, options)
-      [ label(input_name, options[:title] || method.to_s.titlecase),
-        select_tag(input_name, options_for_select(collection, params[input_name]), :include_blank => options[:include_blank] || 'Any')
-      ].join("\n").html_safe
+      label_content = options[:title] || options[:label] || "#{method.to_s.titlecase}" unless options[:label] == false
+
+      content = []
+      content << label(field_name, label_content) unless label_content.blank?
+      content << select_tag(field_name, options_for_select(collection, params[field_name.to_sym]),
+        {:include_blank => options[:include_blank] || 'Any'}.merge(options[:input_html] || {}))
+      content.join("\n").html_safe
     end
 
     def generate_association_input_name(klass, method) #:nodoc:
@@ -131,24 +145,36 @@ module SimpleAdmin
    end
 
     def boolean_collection(klass, column, options)
-      [['', true]]
+      [['No', false], ['Yes', true]]
+    end
+
+    def filter_boolean_input(klass, method, options = {})
+      field_name = (generate_association_input_name(klass, method).to_s + "_in")
+      label_content = options[:title] || options[:label] || "#{method.to_s.titlecase}" unless options[:label] == false
+
+      content = []
+      content << check_box_tag(field_name, true, params[field_name.to_sym], options)
+      content << label(field_name, label_content) unless label_content.blank?
+      content.join("\n").html_safe
     end
 
     def filter_check_boxes_input(klass, method, options = {})
-      input_name = (generate_association_input_name(klass, method).to_s + "_in").to_sym
+      field_name = (generate_association_input_name(klass, method).to_s + "_in")
       collection = find_collection_for_column(klass, method, options)
-      selected_values = params[input_name] || []
+      selected_values = params[field_name.to_sym] || []
       checkboxes = content_tag :div, :class => "check_boxes_wrapper" do
         collection.map do |c|
           label = c.is_a?(Array) ? c.first : c
           value = c.is_a?(Array) ? c.last : c
-          "<label><input type=\"checkbox\" name=\"#{input_name}[]\" value=\"#{value}\" #{selected_values.include?(value) ? "checked" : ""}/> #{label}</label>"
+          "<label><input type=\"checkbox\" name=\"#{field_name}[]\" value=\"#{value}\" #{selected_values.include?(value) ? "checked" : ""}/> #{label}</label>"
         end.join("\n").html_safe
       end
+      label_content = options[:title] || options[:label] || "#{method.to_s.titlecase}" unless options[:label] == false
 
-      [ label(input_name, options[:title] || method.to_s.titlecase),
-        checkboxes
-      ].join("\n").html_safe
+      content = []
+      content << label(field_name, label_content) unless label_content.blank?
+      content << checkboxes
+      content.join("\n").html_safe
     end
 
     alias_method :filter_checkboxes_input, :filter_check_boxes_input
@@ -167,7 +193,7 @@ module SimpleAdmin
         when :float, :decimal
           return :numeric
         when :boolean
-          return :check_boxes
+          return :boolean
         end
       end
 

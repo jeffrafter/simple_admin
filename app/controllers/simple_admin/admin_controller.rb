@@ -116,7 +116,7 @@ module SimpleAdmin
       search_params = search_params.dup
       search_params.delete_if do |key, value|
         value == "" ||
-        ["utf8", "scope", "commit", "action", "order", "interface", "controller", "format", "page", "per_page"].include?(key)
+        ["utf8", "scope", "commit", "action", "order", "interface", "controller", "format", "page", "per_page", "editing"].include?(key)
       end
       search_params
     end
