@@ -1,5 +1,5 @@
 <% content_for :content do %>
-  <div class="paginated_collection">
+  <div class="paginated_collection <%= @interface.collection.to_s %>">
     <div class="pagination_information">
       <% if @collection.num_pages < 2 %>
         <% if @collection.size == 0 %>
@@ -9,18 +9,35 @@
         <% else %>
           Displaying <b>all <%= @collection.size %></b> <%= @interface.collection.titleize %>
         <% end %>
+      <% elsif @collection.size == 1 %>
+         Displaying <%= @interface.member.titleize %>: <%= pretty_format(@collection.first) %>;
+         <b><%= @collection.total_count %></b> in total
       <% else %>
          Displaying <%= @interface.collection.titleize %>
-         <b><%= (@collection.current_page * SimpleAdmin.default_per_page) - SimpleAdmin.default_per_page + 1 %>&nbsp;-&nbsp;<%= (@collection.current_page * SimpleAdmin.default_per_page) > @collection.total_count ? @collection.total_count : (@collection.current_page * SimpleAdmin.default_per_page) %></b>
+         <b><%= (@collection.current_page * (params[:per_page] || SimpleAdmin.default_per_page).to_i) - (params[:per_page] || SimpleAdmin.default_per_page).to_i + 1 %>&nbsp;-&nbsp;<%= (@collection.current_page * (params[:per_page] || SimpleAdmin.default_per_page).to_i) > @collection.total_count ? @collection.total_count : (@collection.current_page * (params[:per_page] || SimpleAdmin.default_per_page).to_i) %></b>
          of <b><%= @collection.total_count %></b> in total
       <% end %>
       <% editable = @interface.attributes_for(:index).any? {|a| a.editable} %>
       <% if editable %>
       | <%= link_to((params[:editing] ? 'Stop Editing' : 'Edit'), request.query_parameters.merge(:editing => (params[:editing] ? nil : 1))) %>
+      | <%= link_to((params[:mode] == 'approvals' ? 'Rows' : 'Approvals'), request.query_parameters.merge(
+            :mode => (params[:mode] == 'approvals' ? nil : 'approvals'),
+            :per_page => (params[:mode] == 'approvals' ? nil : 1))) %>
       <% end %>
     </div>
-    <div class="paginated_collection_contents">
+    <div class="paginated_collection_contents <%= params[:mode] || 'rows' %> <%= 'editing' if params[:editing] %>">
       <div class="index_content">
+        <% if params[:mode] == 'approvals' %>
+          <div class="index_as_pages">
+            <%= paginate(@collection) %>
+            <% if @resource = @collection.first %>
+              <%= send(SimpleAdmin.form_for_helper, @resource, :as => @interface.member.to_sym,
+                :url => resource_path(@resource), :id => "#{@interface.member}_#{@resource.id}", :html => {:onsubmit => "return false", :class => "inline simple_form formtastic #{@interface.member}"}) do |form| %>
+                <%= form_fields(form, @interface.attributes_for(:index, 'approvals')) %>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
         <div class="index_as_table">
           <table border="0" class="index_table" cellspacing="0" cellpadding="0" id="<%= @interface.collection %>">
             <thead>
@@ -57,15 +74,19 @@
             </tbody>
           </table>
         </div>
+        <% end %>
       </div>
     </div>
-    <div id="index_footer">
-      Download:&nbsp;
-      <% [:csv, :xml, :json].each do |format| %>
-        <%= link_to format.to_s.upcase, { :format => format}.merge(request.query_parameters.except(:commit, :format)) %>
-      <% end %>
-    </div>
-    <%= paginate(@collection) %>
+    <% if params[:mode] != 'approvals' %>
+      <div id="index_footer">
+        Download:&nbsp;
+        <% [:csv, :xml, :json].each do |format| %>
+          <%= link_to format.to_s.upcase, { :format => format}.merge(request.query_parameters.except(:commit, :format)) %>
+        <% end %>
+      </div>
+      <%= paginate(@collection) %>
+   <% end %>
+
   </div>
 <% end %>
 

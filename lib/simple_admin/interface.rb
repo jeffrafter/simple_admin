@@ -25,8 +25,8 @@ module SimpleAdmin
       options_for(sym)[:filters].attributes
     end
 
-    def attributes_for(sym)
-      options_for(sym)[:attributes].attributes
+    def attributes_for(sym, mode=nil)
+      options_for(sym)[:attributes].attributes.select{|a| a.mode == mode}
     end
 
     def sidebars_for(sym)

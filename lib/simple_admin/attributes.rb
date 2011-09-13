@@ -33,7 +33,7 @@ module SimpleAdmin
     #   :sort_key a column name used when sorting this column (defaults to the column for this attribute)
     #
     def attribute(name, options={}, &block)
-      attr = @attributes.find {|attr| attr.attribute == name.to_sym }
+      attr = @attributes.find {|attr| attr.attribute == name.to_sym && attr.mode == options[:mode]}
       unless attr
         attr = OpenStruct.new
         @attributes << attr
@@ -45,6 +45,7 @@ module SimpleAdmin
       attr.title = options[:title] || name.to_s.titleize
       attr.sortable = options[:sortable].nil? || !(options[:sortable] === false)
       attr.editable = options[:editable] === true
+      attr.mode = options[:mode]
       attr.sort_key = (options[:sort_key] || name).to_s
       attr
     end
@@ -59,6 +60,7 @@ module SimpleAdmin
       cont.kind = :content
       cont.options = options
       cont.data = block
+      cont.mode = options[:mode]
       cont
     end
 
@@ -82,6 +84,7 @@ module SimpleAdmin
       @attributes << sect
       sect.kind = options.delete(:kind) || :section
       sect.options = options
+      sect.mode = options[:mode]
       sect.attributes = []
       save_attributes = @attributes
       @attributes = sect.attributes
