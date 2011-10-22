@@ -48,9 +48,11 @@ module SimpleAdmin
         end
         # If we are not showing an item or creating a new one, then check for new action items
         unless [:new, :show, :dashboard].include?(params[:action].to_sym)
-          if controller.action_methods.include?('new')
-            content << link_to("New #{@interface.member.titlecase}",
-              send("new_simple_admin_#{@interface.member}_path"))
+          if @interface.constant && @interface.member
+            if controller.action_methods.include?('new')
+              content << link_to("New #{@interface.member.titlecase}",
+                send("new_simple_admin_#{@interface.member}_path"))
+            end
           end
         end
         content.html_safe

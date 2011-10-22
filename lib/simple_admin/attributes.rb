@@ -104,21 +104,23 @@ module SimpleAdmin
     #   :except An array of excluded attribute names as symbols
     #   :only An array of attribute names for this view
     #
-     def defaults(options={})
+    def defaults(options={})
       clear
       if @section.section == :form
-        association_columns = @interface.constant.reflections.map do |name, ref|
+        reflections = @interface.constant.reflections rescue []
+        association_columns = reflections.map do |name, ref|
           if ref.macro == :belongs_to && ref.options[:polymorphic] != true
             name.to_sym
           end
         end.compact
 
-        cols = @interface.constant.content_columns.map {|col| col.name.to_sym }
+        content_columns = @interface.constant.content_columns rescue []
+        cols = content_columns.map {|col| col.name.to_sym }
         cols += association_columns
         cols -= SKIPPED_COLUMNS
         cols.compact!
       else
-        cols = @interface.constant.columns.map{|col| col.name.to_sym }
+        cols = @interface.constant.columns.map{|col| col.name.to_sym } rescue []
       end
       cols -= options[:except] if options[:except]
       cols &= options[:only] if options[:only]

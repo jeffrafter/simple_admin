@@ -17,10 +17,12 @@ module SimpleAdmin
     layout 'simple_admin'
 
     def index
-      @collection = @interface.constant
-      @collection = @collection.order("#{@interface.constant.table_name}.#{$1} #{$2}") if params[:order] && params[:order] =~ /^([\w\_\.]+)_(desc|asc)$/
-      @collection = @collection.metasearch(clean_search_params(params))
-      @collection = @collection.page(params[:page]).per(params[:per_page] || SimpleAdmin.default_per_page) if params[:format].blank? || params[:format] == 'html'
+      @collection = @interface.constant rescue nil
+      if @collection
+        @collection = @collection.order("#{@interface.constant.table_name}.#{$1} #{$2}") if params[:order] && params[:order] =~ /^([\w\_\.]+)_(desc|asc)$/
+        @collection = @collection.metasearch(clean_search_params(params))
+        @collection = @collection.page(params[:page]).per(params[:per_page] || SimpleAdmin.default_per_page) if params[:format].blank? || params[:format] == 'html'
+      end
       respond_to do |format|
         format.csv
         format.html

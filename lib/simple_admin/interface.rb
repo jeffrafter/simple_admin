@@ -9,7 +9,7 @@ module SimpleAdmin
         @constant = resource
         @symbol = resource.name.underscore.to_sym
       else
-        @constant = resource.to_s.camelize.singularize.constantize
+        @constant = resource.to_s.camelize.singularize.constantize rescue nil
         @symbol = resource.to_sym
       end
       @member = @symbol.to_s.singularize

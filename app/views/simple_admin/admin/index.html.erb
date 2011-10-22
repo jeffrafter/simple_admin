@@ -1,110 +1,115 @@
 <% content_for :content do %>
-  <div class="paginated_collection <%= @interface.collection.to_s %>">
-    <div class="pagination_information">
-      <% if @collection.num_pages < 2 %>
-        <% if @collection.size == 0 %>
-          No <%= @interface.collection.titleize %> found
+  <% if @collection %>
+    <div class="paginated_collection <%= @interface.collection.to_s %>">
+      <div class="pagination_information">
+        <% if @collection.num_pages < 2 %>
+          <% if @collection.size == 0 %>
+            No <%= @interface.collection.titleize %> found
+          <% elsif @collection.size == 1 %>
+            Displaying <b>1</b> <%= @interface.member.titleize %>
+          <% else %>
+            Displaying <b>all <%= @collection.size %></b> <%= @interface.collection.titleize %>
+          <% end %>
         <% elsif @collection.size == 1 %>
-          Displaying <b>1</b> <%= @interface.member.titleize %>
+           Displaying <%= @interface.member.titleize %>: <%= pretty_format(@collection.first) %>;
+           <b><%= @collection.total_count %></b> in total
         <% else %>
-          Displaying <b>all <%= @collection.size %></b> <%= @interface.collection.titleize %>
+           Displaying <%= @interface.collection.titleize %>
+           <b><%= (@collection.current_page * (params[:per_page] || SimpleAdmin.default_per_page).to_i) - (params[:per_page] || SimpleAdmin.default_per_page).to_i + 1 %>&nbsp;-&nbsp;<%= (@collection.current_page * (params[:per_page] || SimpleAdmin.default_per_page).to_i) > @collection.total_count ? @collection.total_count : (@collection.current_page * (params[:per_page] || SimpleAdmin.default_per_page).to_i) %></b>
+           of <b><%= @collection.total_count %></b> in total
         <% end %>
-      <% elsif @collection.size == 1 %>
-         Displaying <%= @interface.member.titleize %>: <%= pretty_format(@collection.first) %>;
-         <b><%= @collection.total_count %></b> in total
-      <% else %>
-         Displaying <%= @interface.collection.titleize %>
-         <b><%= (@collection.current_page * (params[:per_page] || SimpleAdmin.default_per_page).to_i) - (params[:per_page] || SimpleAdmin.default_per_page).to_i + 1 %>&nbsp;-&nbsp;<%= (@collection.current_page * (params[:per_page] || SimpleAdmin.default_per_page).to_i) > @collection.total_count ? @collection.total_count : (@collection.current_page * (params[:per_page] || SimpleAdmin.default_per_page).to_i) %></b>
-         of <b><%= @collection.total_count %></b> in total
-      <% end %>
-      <% editable = @interface.attributes_for(:index).any? {|a| a.editable} %>
-      <% if editable %>
-      | <%= link_to((params[:editing] ? 'Stop Editing' : 'Edit'), request.query_parameters.merge(:editing => (params[:editing] ? nil : 1))) %>
-      | <%= link_to((params[:mode] == 'approvals' ? 'Rows' : 'Approvals'), request.query_parameters.merge(
-            :mode => (params[:mode] == 'approvals' ? nil : 'approvals'),
-            :per_page => (params[:mode] == 'approvals' ? nil : 1))) %>
-      <% end %>
-    </div>
-    <div class="paginated_collection_contents <%= params[:mode] || 'rows' %> <%= 'editing' if params[:editing] %>">
-      <div class="index_content">
-        <% if params[:mode] == 'approvals' %>
-          <div class="index_as_pages">
-            <%= paginate(@collection) %>
-            <% if @resource = @collection.first %>
-              <%= send(SimpleAdmin.form_for_helper, @resource, :as => @interface.member.to_sym,
-                :url => resource_path(@resource), :id => "#{@interface.member}_#{@resource.id}", :html => {:onsubmit => "return false", :class => "inline simple_form formtastic #{@interface.member}"}) do |form| %>
-                <%= form_fields(form, @interface.attributes_for(:index, 'approvals')) %>
-              <% end %>
-            <% end %>
-          </div>
-        <% else %>
-        <div class="index_as_table">
-          <table border="0" class="index_table" cellspacing="0" cellpadding="0" id="<%= @interface.collection %>">
-            <thead>
-              <tr>
-                <% @interface.attributes_for(:index).each do |col| %>
-                  <th class="<%= sortable_header_classes_for(col) %> <%= col.attribute %>">
-                    <%= link_to(col.title,
-                      request.query_parameters.merge(:order => "#{col.sort_key}_#{order_for_sort_key(col.sort_key)}").except(:page)) %>
-                  </th>
+        <% editable = @interface.attributes_for(:index).any? {|a| a.editable} %>
+        <% if editable %>
+        | <%= link_to((params[:editing] ? 'Stop Editing' : 'Edit'), request.query_parameters.merge(:editing => (params[:editing] ? nil : 1))) %>
+        | <%= link_to((params[:mode] == 'approvals' ? 'Rows' : 'Approvals'), request.query_parameters.merge(
+              :mode => (params[:mode] == 'approvals' ? nil : 'approvals'),
+              :per_page => (params[:mode] == 'approvals' ? nil : 1))) %>
+        <% end %>
+      </div>
+      <div class="paginated_collection_contents <%= params[:mode] || 'rows' %> <%= 'editing' if params[:editing] %>">
+        <div class="index_content">
+          <% if params[:mode] == 'approvals' %>
+            <div class="index_as_pages">
+              <%= paginate(@collection) %>
+              <% if @resource = @collection.first %>
+                <%= send(SimpleAdmin.form_for_helper, @resource, :as => @interface.member.to_sym,
+                  :url => resource_path(@resource), :id => "#{@interface.member}_#{@resource.id}", :html => {:onsubmit => "return false", :class => "inline simple_form formtastic #{@interface.member}"}) do |form| %>
+                  <%= form_fields(form, @interface.attributes_for(:index, 'approvals')) %>
                 <% end %>
-                <th>&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @collection.each do |object| %>
-                <tr class="<%= cycle('odd', 'even') %>">
-                  <% @interface.attributes_for(:index).each do |col| %>
-                    <td class="<%= col.attribute %>">
-                      <% if col.editable && params[:editing] %>
-                        <%= send(SimpleAdmin.form_for_helper, object, :as => @interface.member.to_sym,
-                          :url => resource_path(object), :id => "#{@interface.member}_#{object.id}", :html => {:class => "inline simple_form formtastic #{@interface.member}"}) do |form| %>
-                          <%= form_field(form, col) %>
-                        <% end %>
-                      <% elsif col.data %>
-                        <%= instance_exec(object, &col.data) %>
-                      <% else %>
-                        <%= pretty_format(object.send(col.attribute)) %>
-                      <% end %>
-                    </td>
-                  <% end %>
-                  <td><%= resource_actions(object) %></td>
-                </tr>
               <% end %>
-            </tbody>
-          </table>
+            </div>
+          <% else %>
+          <div class="index_as_table">
+            <table border="0" class="index_table" cellspacing="0" cellpadding="0" id="<%= @interface.collection %>">
+              <thead>
+                <tr>
+                  <% @interface.attributes_for(:index).each do |col| %>
+                    <th class="<%= sortable_header_classes_for(col) %> <%= col.attribute %>">
+                      <%= link_to(col.title,
+                        request.query_parameters.merge(:order => "#{col.sort_key}_#{order_for_sort_key(col.sort_key)}").except(:page)) %>
+                    </th>
+                  <% end %>
+                  <th>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @collection.each do |object| %>
+                  <tr class="<%= cycle('odd', 'even') %>">
+                    <% @interface.attributes_for(:index).each do |col| %>
+                      <td class="<%= col.attribute %>">
+                        <% if col.editable && params[:editing] %>
+                          <%= send(SimpleAdmin.form_for_helper, object, :as => @interface.member.to_sym,
+                            :url => resource_path(object), :id => "#{@interface.member}_#{object.id}", :html => {:class => "inline simple_form formtastic #{@interface.member}"}) do |form| %>
+                            <%= form_field(form, col) %>
+                          <% end %>
+                        <% elsif col.data %>
+                          <%= instance_exec(object, &col.data) %>
+                        <% else %>
+                          <%= pretty_format(object.send(col.attribute)) %>
+                        <% end %>
+                      </td>
+                    <% end %>
+                    <td><%= resource_actions(object) %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          <% end %>
         </div>
-        <% end %>
       </div>
-    </div>
-    <% if params[:mode] != 'approvals' %>
-      <div id="index_footer">
-        Download:&nbsp;
-        <% [:csv, :xml, :json].each do |format| %>
-          <%= link_to format.to_s.upcase, { :format => format}.merge(request.query_parameters.except(:commit, :format)) %>
-        <% end %>
-      </div>
-      <%= paginate(@collection) %>
-   <% end %>
+      <% if params[:mode] != 'approvals' %>
+        <div id="index_footer">
+          Download:&nbsp;
+          <% [:csv, :xml, :json].each do |format| %>
+            <%= link_to format.to_s.upcase, { :format => format}.merge(request.query_parameters.except(:commit, :format)) %>
+          <% end %>
+        </div>
+        <%= paginate(@collection) %>
+     <% end %>
 
-  </div>
+    </div>
+  <% end %>
 <% end %>
 
 <% content_for :filters do %>
-  <div class="panel sidebar_section" id="filters_sidebar_section">
-    <h3>Filters</h3>
-    <div class="panel_contents">
-      <%= form_tag '', :class => "q_search", :id => "q_search", :method => "get" do %>
-        <%= filter_fields(@interface.filters_for(:index)) %>
-        <div class="buttons">
-          <input name="commit" type="submit" value="Filter" />
-          <a href="?" class="clear_filters_btn">Clear Filters</a>
-          <input id="order" name="order" type="hidden" value="id_desc" />
-          <input id="scope" name="scope" type="hidden" />
-        </div>
-      <% end %>
+  <% filters = @interface.filters_for(:index) %>
+  <% unless filters.blank? %>
+    <div class="panel sidebar_section" id="filters_sidebar_section">
+      <h3>Filters</h3>
+      <div class="panel_contents">
+        <%= form_tag '', :class => "q_search", :id => "q_search", :method => "get" do %>
+          <%= filter_fields(filters) %>
+          <div class="buttons">
+            <input name="commit" type="submit" value="Filter" />
+            <a href="?" class="clear_filters_btn">Clear Filters</a>
+            <input id="order" name="order" type="hidden" value="id_desc" />
+            <input id="scope" name="scope" type="hidden" />
+          </div>
+        <% end %>
+      </div>
     </div>
-  </div>
+  <% end %>
 <% end %>
 
 <% content_for :sidebar do %>
