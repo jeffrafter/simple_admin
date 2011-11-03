@@ -149,7 +149,7 @@ module SimpleAdmin
     end
 
     def filter_boolean_input(klass, method, options = {})
-      field_name = (generate_association_input_name(klass, method).to_s + "_in")
+      field_name = options[:name] || (generate_association_input_name(klass, method).to_s + "_in")
       label_content = options[:title] || options[:label] || "#{method.to_s.titlecase}" unless options[:label] == false
 
       content = []
@@ -159,7 +159,7 @@ module SimpleAdmin
     end
 
     def filter_check_boxes_input(klass, method, options = {})
-      field_name = (generate_association_input_name(klass, method).to_s + "_in")
+      field_name = options[:name] || (generate_association_input_name(klass, method).to_s + "_in")
       collection = find_collection_for_column(klass, method, options)
       selected_values = params[field_name.to_sym] || []
       checkboxes = content_tag :div, :class => "check_boxes_wrapper" do
