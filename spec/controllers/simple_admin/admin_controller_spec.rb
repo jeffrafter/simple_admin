@@ -92,4 +92,13 @@ describe SimpleAdmin::AdminController do
     end
   end
 
+  context "action limits" do
+    it "should prevent destroy from firing" do
+      SimpleAdmin::Interface.any_instance.expects(:actions).returns([:index, :show, :edit])
+      expect {
+        delete :destroy, :id => @thing.id, :interface => "things"
+      }.to raise_error(SimpleAdmin::ActionNotAllowed)
+    end
+  end
+
 end

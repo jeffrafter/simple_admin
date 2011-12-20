@@ -7,6 +7,7 @@ module SimpleAdmin
     before_filter :lookup_interface, :except => [:dashboard]
     before_filter :lookup_before, :except => [:dashboard]
     before_filter :lookup_resource, :only => [:show, :edit, :update, :destroy]
+    before_filter :check_action
 
     unloadable
 
@@ -121,6 +122,10 @@ module SimpleAdmin
         ["utf8", "scope", "commit", "action", "order", "interface", "controller", "format", "page", "per_page", "editing", "mode"].include?(key)
       end
       search_params
+    end
+
+    def check_action
+      raise SimpleAdmin::ActionNotAllowed.new(params[:action]) unless @interface.actions.include?(params[:action].to_sym)
     end
   end
 end

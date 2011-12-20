@@ -35,12 +35,12 @@ module SimpleAdmin
         content = ""
         # If we are currently showing, then check for edit and destroy action items
         if params[:action].to_sym == :show
-          if controller.action_methods.include?('edit')
+          if @interface.actions.include?(:edit)
             content << link_to("Edit #{@interface.member.titlecase}",
               send("edit_simple_admin_#{@interface.member}_path", @object))
           end
           content << "&nbsp;"
-          if controller.action_methods.include?("destroy")
+          if @interface.actions.include?(:destroy)
             content << link_to("Delete #{@interface.member.titlecase}",
               send("simple_admin_#{@interface.member}_path", @object),
               :method => :delete, :confirm => "Are you sure you want to delete this?")
@@ -49,7 +49,7 @@ module SimpleAdmin
         # If we are not showing an item or creating a new one, then check for new action items
         unless [:new, :show, :dashboard].include?(params[:action].to_sym)
           if @interface.constant && @interface.member
-            if controller.action_methods.include?('new')
+            if @interface.actions.include?(:new)
               content << link_to("New #{@interface.member.titlecase}",
                 send("new_simple_admin_#{@interface.member}_path"))
             end

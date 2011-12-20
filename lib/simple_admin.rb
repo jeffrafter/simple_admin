@@ -111,4 +111,12 @@ module SimpleAdmin
       @message = "SimpleAdmin interface unknown, make sure you mount SimpleAdmin in your routes and that you have registered an interface for this resource"
     end
   end
+
+  class ActionNotAllowed < StandardError
+    attr_accessor :message
+
+    def initialize(action)
+      @message = "SimpleAdmin #{action} action undefined, make sure you have allowed this action in your interface definition."
+    end
+  end
 end

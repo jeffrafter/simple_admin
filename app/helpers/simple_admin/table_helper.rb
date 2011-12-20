@@ -30,10 +30,11 @@ module SimpleAdmin
     end
 
     def resource_actions(object)
-      links = link_to "View",  send("simple_admin_#{@interface.member}_path", object), :class => "member_link view_link"
-      links += link_to "Edit", send("edit_simple_admin_#{@interface.member}_path", object), :class => "member_link edit_link"
-      links += link_to "Delete", send("simple_admin_#{@interface.member}_path", object), :method => :delete, :confirm => "Are you sure you want to delete this?", :class => "member_link delete_link"
-      links
+      links = ""
+      links += link_to "View",  send("simple_admin_#{@interface.member}_path", object), :class => "member_link view_link" if @interface.actions.include?(:show)
+      links += link_to "Edit", send("edit_simple_admin_#{@interface.member}_path", object), :class => "member_link edit_link" if @interface.actions.include?(:edit)
+      links += link_to "Delete", send("simple_admin_#{@interface.member}_path", object), :method => :delete, :confirm => "Are you sure you want to delete this?", :class => "member_link delete_link" if @interface.actions.include?(:destroy)
+      raw links
     end
   end
 end
