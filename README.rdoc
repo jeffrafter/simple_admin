@@ -72,7 +72,7 @@ You can also specify to which actions the before block should be
 applied:
 
     SimpleAdmin.register :post do
-      before :only => [:create, :delete] do
+      before :only => [:create, :destroy] do
         require_admin
       end
     end
@@ -219,7 +219,7 @@ generated at initialization. Available actions are:
 * new
 * show
 * edit
-* delete
+* destroy
 * create
 * update
 
