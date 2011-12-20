@@ -7,7 +7,7 @@ module SimpleAdmin
     before_filter :lookup_interface, :except => [:dashboard]
     before_filter :lookup_before, :except => [:dashboard]
     before_filter :lookup_resource, :only => [:show, :edit, :update, :destroy]
-    before_filter :check_action
+    before_filter :check_action, :except => [:dashboard]
 
     unloadable
 
