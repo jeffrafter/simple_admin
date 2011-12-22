@@ -9,7 +9,7 @@ module SimpleAdmin
         when :attribute
           form.input col.attribute, options
         when :content
-          instance_exec(@resource, &col.data)
+          instance_exec(@resource, form, col, &col.data)
         when :fieldset
           content_tag :fieldset, options do
             content_tag :legend do
