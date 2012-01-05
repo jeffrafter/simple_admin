@@ -21,6 +21,10 @@ module SimpleAdmin
       self
     end
 
+    def route
+      @options[:route] || @collection
+    end
+
     def filters_for(sym)
       options_for(sym)[:filters].attributes
     end
