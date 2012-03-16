@@ -6,7 +6,7 @@ module SimpleAdmin
     isolate_namespace SimpleAdmin
     initializer 'simple_admin' do |app|
       if Rails.env == "development"
-        simple_admin_reloader = ActiveSupport::FileUpdateChecker.new(Dir["app/admin/**/*"], true) do
+        simple_admin_reloader = ActiveSupport::FileUpdateChecker.new(Dir["app/admin/**/*"], {}) do
           SimpleAdmin.unregister
           Rails.application.reload_routes!
         end

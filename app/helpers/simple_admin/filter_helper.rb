@@ -36,7 +36,7 @@ module SimpleAdmin
     end
 
     def filter_string_input(klass, method, options = {})
-      field_name = "#{method}_contains"
+      field_name = "#{method}_cont"
       label_content =  options[:title] || options[:label] || "Search #{method.to_s.titlecase}" unless options[:label] == false
 
       content = []
@@ -46,8 +46,8 @@ module SimpleAdmin
     end
 
     def filter_date_range_input(klass, method, options = {})
-      gt_field_name = "#{method}_gte"
-      lt_field_name = "#{method}_lte"
+      gt_field_name = "#{method}_gteq"
+      lt_field_name = "#{method}_lteq"
       label_content =  options[:title] || options[:label] || "#{method.to_s.titlecase}" unless options[:label] == false
 
       content = []

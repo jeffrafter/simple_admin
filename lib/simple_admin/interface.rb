@@ -16,8 +16,8 @@ module SimpleAdmin
       @collection = @symbol.to_s.pluralize
       @options = options
       @sections = {}
+      @block = block
       @before = []
-      @builder = SimpleAdmin::Builder.new(self, &block)
       self
     end
 
@@ -52,6 +52,7 @@ module SimpleAdmin
     private
 
     def section(sym)
+      @builder ||= SimpleAdmin::Builder.new(self, &@block)
       @sections[sym] ||= SimpleAdmin::Section.new(self, sym)
       @sections[sym]
     end

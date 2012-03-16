@@ -44,11 +44,19 @@ describe SimpleAdmin::Interface do
     @interface.should_not be_nil
   end
 
-  it "executes a block using a builder if submitted" do
+  it "doesn't execute a block using a builder when initialized" do
+    SimpleAdmin::Builder.any_instance.expects(:success).never
+    @interface = SimpleAdmin.register(:things) do
+      success
+    end
+  end
+
+  it "executes a block using a builder if a section is requested" do
     SimpleAdmin::Builder.any_instance.expects(:success)
     @interface = SimpleAdmin.register(:things) do
       success
     end
+    @interface.send(:section, :custom)
   end
 
   it "retrieves the attributes for a section" do
