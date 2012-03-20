@@ -28,7 +28,7 @@ module SimpleAdmin
       options[:actions] = options[:actions] || [:index, :show, :edit, :new, :destroy, :create, :update]
       options[:actions] -= options[:except] if options[:except]
       options[:actions] &= options[:only] if options[:only]
-      @interface.before << options
+      @interface.before_filters << options
     end
 
     # Comfort the masses

@@ -2,7 +2,7 @@ require 'ostruct'
 
 module SimpleAdmin
   class Interface
-    attr_reader :collection, :member, :constant, :options, :before, :sections
+    attr_reader :collection, :member, :constant, :options, :sections, :before_filters
 
     def initialize(resource, options={}, &block)
       if resource.is_a?(Class)
@@ -17,7 +17,7 @@ module SimpleAdmin
       @options = options
       @sections = {}
       @block = block
-      @before = []
+      @before_filters = []
       self
     end
 
@@ -47,6 +47,11 @@ module SimpleAdmin
       arr -= @options[:except] if @options[:except]
       arr &= @options[:only] if @options[:only]
       arr
+    end
+
+    def before
+      @builder ||= SimpleAdmin::Builder.new(self, &@block)
+      @before_filters
     end
 
     private
