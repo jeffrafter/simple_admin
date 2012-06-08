@@ -21,22 +21,41 @@
         <% editable = @interface.attributes_for(:index).any? {|a| a.editable} %>
         <% if editable %>
         | <%= link_to((params[:editing] ? 'Stop Editing' : 'Edit'), request.query_parameters.merge(:editing => (params[:editing] ? nil : 1))) %>
-        | <%= link_to((params[:mode] == 'approvals' ? 'Rows' : 'Approvals'), request.query_parameters.merge(
-              :mode => (params[:mode] == 'approvals' ? nil : 'approvals'),
-              :per_page => (params[:mode] == 'approvals' ? nil : 1))) %>
+        | <%= link_to(@interface.options[:rows_name] || 'Rows', request.query_parameters.merge(:mode => 'rows', :per_page => nil)) %>
+        | <%= link_to(@interface.options[:pages_name] || 'Pages', request.query_parameters.merge(:mode => 'pages', :per_page => 1)) %>
+        | <%= link_to(@interface.options[:gallery_name] || 'Gallery', request.query_parameters.merge(:mode => 'gallery', :per_page => nil)) %>
         <% end %>
       </div>
       <div class="paginated_collection_contents <%= params[:mode] || 'rows' %> <%= 'editing' if params[:editing] %>">
         <div class="index_content">
-          <% if params[:mode] == 'approvals' %>
+          <% if params[:mode] == 'pages' %>
             <div class="index_as_pages">
               <%= paginate(@collection) %>
               <% if @resource = @collection.first %>
                 <%= send(SimpleAdmin.form_for_helper, @resource, :as => @interface.member.to_sym,
                   :url => resource_path(@resource), :id => "#{@interface.member}_#{@resource.id}", :html => {:onsubmit => "return false", :class => "inline simple_form formtastic #{@interface.member}"}) do |form| %>
-                  <%= form_fields(form, @interface.attributes_for(:index, 'approvals')) %>
+                  <%= form_fields(form, @interface.attributes_for(:index, 'pages')) %>
                 <% end %>
               <% end %>
+            </div>
+          <% elsif params[:mode] == 'gallery' %>
+            <%= paginate(@collection) %>
+            <div class="index_as_gallery">
+              <ul>
+                <% @collection.each do |object| %>
+                  <li>
+                    <% @interface.attributes_for(:index, 'gallery').each do |col| %>
+                      <div class="<%= col.attribute %>">
+                        <% if col.data %>
+                          <%= instance_exec(object, &col.data) %>
+                        <% else %>
+                          <%= pretty_format(object.send(col.attribute)) %>
+                        <% end %>
+                      </div>
+                    <% end %>
+                  </li>
+                <% end %>
+              </ul>
             </div>
           <% else %>
           <div class="index_as_table">
@@ -78,7 +97,8 @@
           <% end %>
         </div>
       </div>
-      <% if params[:mode] != 'approvals' %>
+      <% if params[:mode] != 'pages' %>
+        <div style="float:none;clear:both;"></div>
         <div id="index_footer">
           Download:&nbsp;
           <% [:csv, :xml, :json].each do |format| %>
@@ -99,6 +119,7 @@
       <h3>Filters</h3>
       <div class="panel_contents">
         <%= form_tag '', :class => "q_search", :id => "q_search", :method => "get" do %>
+          <%= hidden_field_tag "mode", params["mode"] %>
           <%= filter_fields(filters) %>
           <div class="buttons">
             <input name="commit" type="submit" value="Filter" />
