@@ -23,6 +23,7 @@ module SimpleAdmin
         @collection = @collection.search(clean_search_params(params)).result
         @collection = @collection.order("#{@interface.constant.table_name}.#{$1} #{$2}") if params[:order] && params[:order] =~ /^([\w\_\.]+)_(desc|asc)$/
         @collection = @collection.page(params[:page]).per(params[:per_page] || SimpleAdmin.default_per_page) if params[:format].blank? || params[:format] == 'html'
+        @scopes.each { |sym| @collection = @collection.send(sym) } unless @scopes.blank?
       end
       respond_to do |format|
         format.csv
@@ -126,6 +127,11 @@ module SimpleAdmin
 
     def check_action
       raise SimpleAdmin::ActionNotAllowed.new(params[:action]) unless @interface.actions.include?(params[:action].to_sym)
+    end
+
+    def scope(sym)
+      @scopes ||= []
+      @scopes << sym
     end
   end
 end
