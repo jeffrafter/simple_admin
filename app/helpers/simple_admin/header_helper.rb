@@ -37,12 +37,12 @@ module SimpleAdmin
         if params[:action].to_sym == :show
           if @interface.actions.include?(:edit)
             content << link_to("Edit #{@interface.member.titlecase}",
-              send("edit_simple_admin_#{@interface.member}_path", @object))
+              send("edit_simple_admin_#{@interface.member}_path", @resource))
           end
           content << "&nbsp;"
           if @interface.actions.include?(:destroy)
             content << link_to("Delete #{@interface.member.titlecase}",
-              send("simple_admin_#{@interface.member}_path", @object),
+              send("simple_admin_#{@interface.member}_path", @resource),
               :method => :delete, :confirm => "Are you sure you want to delete this?")
           end
         end
