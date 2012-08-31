@@ -23,6 +23,7 @@
         | <%= link_to((params[:editing] ? 'Stop Editing' : 'Edit'), request.query_parameters.merge(:editing => (params[:editing] ? nil : 1))) %>
         | <%= link_to(@interface.options[:rows_name] || 'Rows', request.query_parameters.merge(:mode => 'rows', :per_page => nil)) %>
         | <%= link_to(@interface.options[:pages_name] || 'Pages', request.query_parameters.merge(:mode => 'pages', :per_page => 1)) %>
+        | <%= link_to(@interface.options[:quick_edit_name] || 'QuickEdit', request.query_parameters.merge(:mode => 'quick_edit', :per_page => 1)) %>
         | <%= link_to(@interface.options[:gallery_name] || 'Gallery', request.query_parameters.merge(:mode => 'gallery', :per_page => nil)) %>
         <% end %>
       </div>
@@ -38,6 +39,16 @@
                 <% end %>
               <% end %>
             </div>
+            <% elsif params[:mode] == 'quick_edit' %>
+              <div class="index_as_quick_edit">
+                <%= paginate(@collection) %>
+                <% if @resource = @collection.first %>
+                  <%= send(SimpleAdmin.form_for_helper, @resource, :as => @interface.member.to_sym,
+                    :url => resource_path(@resource), :id => "#{@interface.member}_#{@resource.id}", :html => {:onsubmit => "return false", :class => "inline simple_form formtastic #{@interface.member}"}) do |form| %>
+                      <%= form_fields(form, @interface.attributes_for(:index, 'quick_edit')) %>
+                  <% end %>
+                <% end %>
+              </div>
           <% elsif params[:mode] == 'gallery' %>
             <%= paginate(@collection) %>
             <div class="index_as_gallery">
@@ -97,7 +108,7 @@
           <% end %>
         </div>
       </div>
-      <% if params[:mode] != 'pages' %>
+      <% if params[:mode] != 'pages' && params[:mode] != 'quick_edit' %>
         <div style="float:none;clear:both;"></div>
         <div id="index_footer">
           Download:&nbsp;
