@@ -93,10 +93,12 @@ module SimpleAdmin
     protected
 
     def require_user
+      puts ">>>>>>>>>>>>>>>>>>>>>>>>>> REQUIRE USER"
       send(SimpleAdmin.require_user_method) if SimpleAdmin.require_user_method
     end
 
     def lookup_interface
+      puts ">>>>>>>>>>>>>>>>>>>>>>>>>> LOOKING UP INTERFACE"
       SimpleAdmin.registered.each do |interface|
         @interface = interface if interface.collection == params[:interface]
       end

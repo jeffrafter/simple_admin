@@ -40,6 +40,7 @@ module SimpleAdmin
 
     def registered
       unless defined?(@@registered) && @@registered
+        puts ">>>>>>>>>>>>>>>>>>>>>>> EVERYTHING IS RESET"
         @@registered = []
         # We load up all of the admin files on launch, if they change you need to restart
         begin
@@ -79,6 +80,7 @@ module SimpleAdmin
     # Various configuration options are available within the block
     def register(resource, options={}, &block)
       if defined?(@@registered)
+        puts ">>>>>>>>>>>>>> REGISTERING INTERFACE: [#{resource}]"
         interface = SimpleAdmin::Interface.new(resource, options, &block)
         self.registered << interface
         interface
