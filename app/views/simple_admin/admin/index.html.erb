@@ -18,7 +18,7 @@
            <b><%= (@collection.current_page * (params[:per_page] || SimpleAdmin.default_per_page).to_i) - (params[:per_page] || SimpleAdmin.default_per_page).to_i + 1 %>&nbsp;-&nbsp;<%= (@collection.current_page * (params[:per_page] || SimpleAdmin.default_per_page).to_i) > @collection.total_count ? @collection.total_count : (@collection.current_page * (params[:per_page] || SimpleAdmin.default_per_page).to_i) %></b>
            of <b><%= @collection.total_count %></b> in total
         <% end %>
-        <% editable = @interface.attributes_for(:index).any? {|a| a.editable} %>
+        <% editable = @interface.attributes_for(:index).any? {|a| a[:editable] } %>
         <% if editable %>
         | <%= link_to((params[:editing] ? 'Stop Editing' : 'Edit'), request.query_parameters.merge(:editing => (params[:editing] ? nil : 1))) %>
         | <%= link_to(@interface.options[:rows_name] || 'Rows', request.query_parameters.merge(:mode => 'rows', :per_page => nil)) %>
@@ -39,16 +39,16 @@
                 <% end %>
               <% end %>
             </div>
-            <% elsif params[:mode] == 'quick_edit' %>
-              <div class="index_as_quick_edit">
-                <%= paginate(@collection) %>
-                <% if @resource = @collection.first %>
-                  <%= send(SimpleAdmin.form_for_helper, @resource, :as => @interface.member.to_sym,
-                    :url => resource_path(@resource), :id => "#{@interface.member}_#{@resource.id}", :html => {:onsubmit => "return false", :class => "inline simple_form formtastic #{@interface.member}"}) do |form| %>
-                      <%= form_fields(form, @interface.attributes_for(:index, 'quick_edit')) %>
-                  <% end %>
+          <% elsif params[:mode] == 'quick_edit' %>
+            <div class="index_as_quick_edit">
+              <%= paginate(@collection) %>
+              <% if @resource = @collection.first %>
+                <%= send(SimpleAdmin.form_for_helper, @resource, :as => @interface.member.to_sym,
+                  :url => resource_path(@resource), :id => "#{@interface.member}_#{@resource.id}", :html => {:onsubmit => "return false", :class => "inline simple_form formtastic #{@interface.member}"}) do |form| %>
+                  <%= form_fields(form, @interface.attributes_for(:index, 'quick_edit')) %>
                 <% end %>
-              </div>
+              <% end %>
+            </div>
           <% elsif params[:mode] == 'gallery' %>
             <%= paginate(@collection) %>
             <div class="index_as_gallery">
@@ -56,11 +56,11 @@
                 <% @collection.each do |object| %>
                   <li>
                     <% @interface.attributes_for(:index, 'gallery').each do |col| %>
-                      <div class="<%= col.attribute %>">
-                        <% if col.data %>
-                          <%= instance_exec(object, &col.data) %>
+                      <div class="<%= col[:attribute] %>">
+                        <% if col[:data] %>
+                          <%= instance_exec(object, &col[:data]) %>
                         <% else %>
-                          <%= pretty_format(object.send(col.attribute)) %>
+                          <%= pretty_format(object.send(col[:attribute])) %>
                         <% end %>
                       </div>
                     <% end %>
@@ -74,9 +74,9 @@
               <thead>
                 <tr>
                   <% @interface.attributes_for(:index).each do |col| %>
-                    <th class="<%= sortable_header_classes_for(col) %> <%= col.attribute %>">
-                      <%= link_to(col.title,
-                        request.query_parameters.merge(:order => "#{col.sort_key}_#{order_for_sort_key(col.sort_key)}").except(:page)) %>
+                    <th class="<%= sortable_header_classes_for(col) %> <%= col[:attribute] %>">
+                      <%= link_to(col[:title],
+                        request.query_parameters.merge(:order => "#{col[:sort_key]}_#{order_for_sort_key(col[:sort_key])}").except(:page)) %>
                     </th>
                   <% end %>
                   <th>&nbsp;</th>
@@ -86,16 +86,16 @@
                 <% @collection.each do |object| %>
                   <tr class="<%= cycle('odd', 'even') %>">
                     <% @interface.attributes_for(:index).each do |col| %>
-                      <td class="<%= col.attribute %>">
-                        <% if col.editable && params[:editing] %>
+                      <td class="<%= col[:attribute] %>">
+                        <% if col[:editable] && params[:editing] %>
                           <%= send(SimpleAdmin.form_for_helper, object, :as => @interface.member.to_sym,
                             :url => resource_path(object), :id => "#{@interface.member}_#{object.id}", :html => {:class => "inline simple_form formtastic #{@interface.member}"}) do |form| %>
                             <%= form_field(form, col) %>
                           <% end %>
-                        <% elsif col.data %>
-                          <%= instance_exec(object, &col.data) %>
+                        <% elsif col[:data] %>
+                          <%= instance_exec(object, &col[:data]) %>
                         <% else %>
-                          <%= pretty_format(object.send(col.attribute)) %>
+                          <%= pretty_format(object.send(col[:attribute])) %>
                         <% end %>
                       </td>
                     <% end %>

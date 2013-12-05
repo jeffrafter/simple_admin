@@ -2,23 +2,23 @@ module SimpleAdmin
   module FilterHelper
     def filter_fields(attributes)
       attributes.map do |col|
-        options = col.options.dup
+        options = col[:options].dup
         expand_block_options!(options)
-        case col.kind
+        case col[:kind]
         when :attribute, :filter
-          filter_for(col.attribute, @interface.constant, options)
+          filter_for(col[:attribute], @interface.constant, options)
         when :content
-          instance_exec(self, &col.data)
+          instance_exec(self, &col[:data])
         when :fieldset
           content_tag :fieldset, options do
             content_tag :legend do
               options[:legend]
             end unless options[:legend].blank
-            filter_fields(col.attributes)
+            filter_fields(col[:attributes])
           end
         else
           content_tag :div, options do
-            filter_fields(col.attributes)
+            filter_fields(col[:attributes])
           end
         end
       end.join.html_safe
@@ -127,6 +127,7 @@ module SimpleAdmin
     end
 
     def find_collection_for_column(klass, column, options) #:nodoc:
+Rails.logger.info("******** find_collection_for_column #{klass}, #{column}, #{options.to_json}")
       collection = if options[:collection]
         collection = options.delete(:collection)
         collection = collection.to_a if collection.is_a?(Hash)

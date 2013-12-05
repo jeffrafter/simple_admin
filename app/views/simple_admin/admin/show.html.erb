@@ -7,7 +7,7 @@
         <table border="0" cellspacing="0" cellpadding="0">
           <% @interface.attributes_for(:show).each do |attr| %>
             <tr>
-              <th><%= attr.title %></th>
+              <th><%= attr[:title] %></th>
               <td><%= data_for(attr) %></td>
             </tr>
           <% end %>

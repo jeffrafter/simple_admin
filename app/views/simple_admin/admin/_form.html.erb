@@ -1,5 +1,14 @@
   <%= send(SimpleAdmin.form_for_helper, @resource, :as => @interface.member.to_sym,
     :url => resource_path(@resource), :html => {:class => "simple_form formtastic #{@interface.member}"}) do |form| %>
+    <% if @resource.errors.any? %>
+    <div class="admin-form-errors">
+      <ul>
+        <% @resource.errors.full_messages.each do |err| %>
+        <%= content_tag :li, err %>
+        <% end %>
+      </ul>
+    </div>
+    <% end %>
     <fieldset class="inputs">
       <ol>
         <%= form_fields(form, @interface.attributes_for(:form)) %>

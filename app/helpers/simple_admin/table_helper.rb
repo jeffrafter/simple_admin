@@ -3,8 +3,8 @@ module SimpleAdmin
     def sortable_header_classes_for(col)
       sort = current_sort
       classes = []
-      classes << "sortable" if col.sortable
-      classes << "sorted-#{sort[1]}" if sort[0] == col.sort_key
+      classes << "sortable" if col[:sortable]
+      classes << "sorted-#{sort[1]}" if sort[0] == col[:sort_key]
       classes.join(' ')
     end
 

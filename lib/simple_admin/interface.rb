@@ -30,7 +30,7 @@ module SimpleAdmin
     end
 
     def attributes_for(sym, mode=nil)
-      options_for(sym)[:attributes].attributes.select{|a| a.mode == mode}
+      options_for(sym)[:attributes].attributes.select{|a| a[:mode] == mode}
     end
 
     def sidebars_for(sym)

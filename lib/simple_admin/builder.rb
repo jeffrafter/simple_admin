@@ -8,7 +8,9 @@ module SimpleAdmin
     end
 
     def section(sym, options={}, &block)
+      start = Time.now
       @interface.sections[sym] = SimpleAdmin::Section.new(@interface, sym, options, &block)
+      Rails.logger.info("[#{Time.now}] *** Built section #{sym} for #{interface.collection} (elapsed #{Time.now - start})")
     end
 
     def index(options={}, &block)

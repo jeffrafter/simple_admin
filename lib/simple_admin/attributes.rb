@@ -23,6 +23,7 @@ module SimpleAdmin
     # Clear the attributes for this section
     def clear
       @attributes = []
+      @attributes_hash = {}
     end
 
     # Define or override an attribute for this section
@@ -33,20 +34,23 @@ module SimpleAdmin
     #   :sort_key a column name used when sorting this column (defaults to the column for this attribute)
     #
     def attribute(name, options={}, &block)
-      attr = @attributes.find {|attr| attr.attribute == name.to_sym && attr.mode == options[:mode]}
+start = Time.now
+      key = "#{name}:#{options[:mode]}"
+      attr = @attributes_hash[key]
       unless attr
-        attr = OpenStruct.new
+        attr = {}
         @attributes << attr
+        @attributes_hash[key] = attr
       end
-      attr.kind = :attribute
-      attr.attribute = name.to_sym
-      attr.options = options
-      attr.data = block
-      attr.title = options[:title] || name.to_s.titleize
-      attr.sortable = options[:sortable].nil? || !(options[:sortable] === false)
-      attr.editable = options[:editable] === true
-      attr.mode = options[:mode]
-      attr.sort_key = (options[:sort_key] || name).to_s
+      attr[:kind] = :attribute
+      attr[:attribute] = name.to_sym
+      attr[:options] = options
+      attr[:data] = block
+      attr[:title] = options[:title] || name.to_s.titleize
+      attr[:sortable] = options[:sortable].nil? || !(options[:sortable] === false)
+      attr[:editable] = options[:editable] === true
+      attr[:mode] = options[:mode]
+      attr[:sort_key] = (options[:sort_key] || name).to_s
       attr
     end
 
@@ -55,12 +59,12 @@ module SimpleAdmin
     # This is only used when displaying a form.
     #
     def content(options={}, &block)
-      cont = OpenStruct.new
+      cont = {}
       @attributes << cont
-      cont.kind = :content
-      cont.options = options
-      cont.data = block
-      cont.mode = options[:mode]
+      cont[:kind] = :content
+      cont[:options] = options
+      cont[:data] = block
+      cont[:mode] = options[:mode]
       cont
     end
 
@@ -80,14 +84,14 @@ module SimpleAdmin
     #    end
     #  end
     def section(options={}, &block)
-      sect = OpenStruct.new
+      sect = {}
       @attributes << sect
-      sect.kind = options.delete(:kind) || :section
-      sect.options = options
-      sect.mode = options[:mode]
-      sect.attributes = []
+      sect[:kind] = options.delete(:kind) || :section
+      sect[:options] = options
+      sect[:mode] = options[:mode]
+      sect[:attributes] = []
       save_attributes = @attributes
-      @attributes = sect.attributes
+      @attributes = sect[:attributes]
       instance_eval(&block) if block_given?
       @attributes = save_attributes
       sect

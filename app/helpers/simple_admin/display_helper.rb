@@ -25,12 +25,12 @@ module SimpleAdmin
     end
 
     def data_for(col)
-      value = if col.data
-        instance_exec(@resource, &col.data)
-      elsif col.attribute.to_s =~ /^([\w]+)_id$/ && @resource.respond_to?($1.to_sym)
+      value = if col[:data]
+        instance_exec(@resource, &col[:data])
+      elsif col[:attribute].to_s =~ /^([\w]+)_id$/ && @resource.respond_to?($1.to_sym)
         pretty_format(@resource.send($1))
       else
-        pretty_format(@resource.send(col.attribute))
+        pretty_format(@resource.send(col[:attribute]))
       end
       value ||= content_tag(:span, 'Empty', :class => 'empty')
     end
