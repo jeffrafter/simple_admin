@@ -42,7 +42,7 @@ module SimpleAdmin
     end
 
     def create
-      @resource = @interface.constant.new(params[@interface.member.to_sym], :as => @mass_assignment_role || :default, :without_protection => @without_protection || false)
+      @resource = @interface.constant.new(params[@interface.member.to_sym])
       # respond_with will fail without explicit urls
       respond_to do |format|
         if @resource.save
@@ -60,7 +60,7 @@ module SimpleAdmin
     def update
       # respond_with will fail without explicit urls
       respond_to do |format|
-        if @resource.update_attributes(params[@interface.member.to_sym], :as => @mass_assignment_role || :default, :without_protection => @without_protection || false)
+        if @resource.update_attributes(params[@interface.member.to_sym])
           format.html { redirect_to send("simple_admin_#{@interface.member}_path", @resource), :notice => "#{@interface.member.titleize} was successfully updated." }
           format.json { head :ok }
           format.xml { head :ok }
