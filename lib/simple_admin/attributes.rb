@@ -34,7 +34,6 @@ module SimpleAdmin
     #   :sort_key a column name used when sorting this column (defaults to the column for this attribute)
     #
     def attribute(name, options={}, &block)
-start = Time.now
       key = "#{name}:#{options[:mode]}"
       attr = @attributes_hash[key]
       unless attr

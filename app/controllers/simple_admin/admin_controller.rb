@@ -1,6 +1,3 @@
-require 'kaminari'
-require 'ransack'
-
 module SimpleAdmin
   class AdminController < ::ApplicationController
     before_filter :require_user
@@ -9,8 +6,6 @@ module SimpleAdmin
     before_filter :lookup_resource, :only => [:show, :edit, :update, :destroy]
     before_filter :check_action, :except => [:dashboard]
 
-    unloadable
-
     respond_to :json, :xml, :html, :except => :index
 
     helper SimpleAdmin::AdminHelper
@@ -18,7 +13,6 @@ module SimpleAdmin
     layout 'simple_admin'
 
     def index
-      Rails.logger.info "[#{Time.now}] Preparing index"
       @collection ||= @interface.constant rescue nil
 
       if @collection
@@ -26,15 +20,12 @@ module SimpleAdmin
         @collection = @collection.order("#{@interface.constant.table_name}.#{$1} #{$2}") if params[:order] && params[:order] =~ /^([\w\_\.]+)_(desc|asc)$/
         @collection = @collection.page(params[:page]).per(params[:per_page] || SimpleAdmin.default_per_page) if params[:format].blank? || params[:format] == 'html'
       end
-      Rails.logger.info "[#{Time.now}] Rendering"
-      res = respond_to do |format|
+      respond_to do |format|
         format.csv
         format.html
         format.xml { render :xml => @collection }
         format.json { render :json => @collection }
       end
-      Rails.logger.info "[#{Time.now}] Done"
-      res
     end
 
     def show
@@ -101,9 +92,7 @@ module SimpleAdmin
     end
 
     def lookup_interface
-      Rails.logger.info "[#{Time.now}] Checking for registered interfaces"
       SimpleAdmin.registered.each do |interface|
-        Rails.logger.info "[#{Time.now}] Checking interface #{interface.collection}=#{params[:interface]}"
         @interface = interface if interface.collection == params[:interface]
       end
       # This should not be reached, routing should catch errors before this point
@@ -111,12 +100,9 @@ module SimpleAdmin
     end
 
     def lookup_before
-      Rails.logger.info "[#{Time.now}] Lookup before"
       @interface.before.each do |before|
         next unless before[:actions].include?(params[:action].to_sym)
-        Rails.logger.info "[#{Time.now}] Running before"
         instance_eval(&before[:data])
-        Rails.logger.info "[#{Time.now}] Completed before"
       end
     end
 

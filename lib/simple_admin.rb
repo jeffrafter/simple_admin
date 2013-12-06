@@ -1,5 +1,5 @@
 module SimpleAdmin
-  require 'simple_admin/engine' if defined?(Rails) && Rails::VERSION::MAJOR == 3
+  require 'simple_admin/engine' if defined?(Rails)
   require 'simple_admin/interface'
   require 'simple_admin/builder'
   require 'simple_admin/section'
