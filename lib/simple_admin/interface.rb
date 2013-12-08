@@ -26,15 +26,19 @@ module SimpleAdmin
     end
 
     def filters_for(sym)
-      options_for(sym)[:filters].attributes
+      @filters ||= options_for(sym)[:filters]
+      @filters ||= section(sym).filters
+      @filters.attributes
     end
 
     def attributes_for(sym, mode=nil)
-      options_for(sym)[:attributes].attributes.select{|a| a[:mode] == mode}
+      @attributes ||= options_for(sym)[:attributes]
+      @attributes ||= section(sym).attributes
+      @attributes.attributes.select{|a| a[:mode] == mode}
     end
 
     def sidebars_for(sym)
-      options_for(sym)[:sidebars] || []
+      @sidebars ||= options_for(sym)[:sidebars] || []
     end
 
     def options_for(sym)

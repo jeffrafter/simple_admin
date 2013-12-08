@@ -109,6 +109,7 @@ module SimpleAdmin
     #
     def defaults(options={})
       clear
+      return @cols if defined?(@cols)
       if @section.section == :form
         reflections = @interface.constant.reflections rescue []
         association_columns = reflections.map do |name, ref|
@@ -118,16 +119,17 @@ module SimpleAdmin
         end.compact
 
         content_columns = @interface.constant.content_columns rescue []
-        cols = content_columns.map {|col| col.name.to_sym }
-        cols += association_columns
-        cols -= SKIPPED_COLUMNS
-        cols.compact!
+        @cols = content_columns.map {|col| col.name.to_sym }
+        @cols += association_columns
+        @cols -= SKIPPED_COLUMNS
+        @cols.compact!
       else
-        cols = @interface.constant.columns.map{|col| col.name.to_sym } rescue []
+        @cols = @interface.constant.columns.map{|col| col.name.to_sym } rescue []
       end
-      cols -= options[:except] if options[:except]
-      cols &= options[:only] if options[:only]
-      cols.each {|col| attribute(col.to_s) }
+      @cols -= options[:except] if options[:except]
+      @cols &= options[:only] if options[:only]
+      @cols.sort_by! {|col| options[:only].index(col.to_sym) } if options[:only]
+      @cols.each {|col| attribute(col.to_s) }
     end
   end
 end
