@@ -1,3 +1,5 @@
+require 'simple_admin/kaminari'
+
 module SimpleAdmin
   class AdminController < ::ApplicationController
     before_filter :require_user
