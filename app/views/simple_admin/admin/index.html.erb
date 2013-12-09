@@ -76,6 +76,7 @@
                   <% @interface.attributes_for(:index).each do |col| %>
                     <th class="<%= sortable_header_classes_for(col) %> <%= col[:attribute] %>">
                       <%= link_to(col[:title],
+                        request.path + "?" +
                         request.query_parameters.merge(:order => "#{col[:sort_key]}_#{order_for_sort_key(col[:sort_key])}").except(:page).to_query) %>
                     </th>
                   <% end %>
