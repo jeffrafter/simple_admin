@@ -7,8 +7,6 @@ module SimpleAdmin
       @section = section
       @options = options
       @allow_filters = (section == :index)
-#      attributes
-#      filters if @allow_filters
       instance_eval(&block) if block_given?
       self
     end

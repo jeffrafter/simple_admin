@@ -18,6 +18,7 @@ module SimpleAdmin
       @collection ||= @interface.constant rescue nil
 
       if @collection
+        @collection = @collection.unscoped if params[:order].present?
         @collection = @collection.search(clean_search_params(params)).result
         @collection = @collection.order("#{@interface.constant.table_name}.#{$1} #{$2}") if params[:order] && params[:order] =~ /^([\w\_\.]+)_(desc|asc)$/
         @collection = @collection.page(params[:page]).per(params[:per_page] || SimpleAdmin.default_per_page) if params[:format].blank? || params[:format] == 'html'
