@@ -13,6 +13,9 @@
         <%= tabs %>
         <%= utility_nav %>
       </div>
+      <% flash.each do |type, msg| %>
+      <p class="flash <%= type %>"><%= msg %></p>
+      <% end %>
       <div id="title_bar">
         <%= breadcrumbs %>
         <h2 id="page_title"><%= page_title %></h2>
